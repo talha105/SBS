@@ -9,9 +9,11 @@ import DateIcon from "react-native-vector-icons/Fontisto"
 import TimeIcon from "react-native-vector-icons/Ionicons"
 import MarkIcon from "react-native-vector-icons/Ionicons"
 
-export default function Note({title,des,date,time,select}) {
+export default function Note({title,des,date,time,select,call}) {
     return (
+        <View style={{width:'50%',padding:responsiveFontSize(1)}}>
         <TouchableOpacity
+        onPress={call}
         style={{...styles.con,borderColor:select?'#44C4A1':'white'}}
         >
             {select?(
@@ -44,6 +46,7 @@ export default function Note({title,des,date,time,select}) {
                 </View>
             </View>
         </TouchableOpacity>
+        </View>
     )
 }
 

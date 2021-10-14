@@ -5,9 +5,6 @@ import Icon from "react-native-vector-icons/Ionicons"
 import PassordIcon from "react-native-vector-icons/Entypo"
 import ArrowIcon from "react-native-vector-icons/AntDesign"
 import Btn from '../../components/Btn'
-import ProfileBox from '../../components/ProfileBox'
-import Note from '../../components/Note'
-import Subscription from '../../components/Subscription'
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
 import ValidateEmail from '../../utils/validateEmail'
 
@@ -23,7 +20,7 @@ export default function Login({navigation}) {
     function onSubmit(){
         setSubmit(true)
         if(fields.password && ValidateEmail(fields.email)){
-            navigation.push('signUp')
+            navigation.push('secondStep')
         }
     }
     return (

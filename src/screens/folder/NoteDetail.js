@@ -6,23 +6,13 @@ import SearchIcon from "react-native-vector-icons/AntDesign"
 import MoreIcon from "react-native-vector-icons/Feather"
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import FolderBox from '../../components/FolderBox';
+import NoteDetailBox from '../../components/NoteDetailBox';
 
-export default function Folder({navigation}) {
+export default function NoteDetail({navigation}) {
 
     useLayoutEffect(()=>{
         navigation.setOptions({
-            headerLeft:()=>(
-                <TouchableOpacity
-                onPress={()=>navigation.openDrawer()}
-                >
-                    <MenuIcon
-                    name="menu"
-                    size={responsiveFontSize(4)}
-                    color="white"
-                    />
-                </TouchableOpacity>
-            ),
-            headerTitle: props => <Text style={{marginLeft:responsiveWidth(5),textAlign:'center',color:'white',fontSize:responsiveFontSize(2.5),textTransform:'uppercase',includeFontPadding:false,textAlignVertical:'center'}}>Folders</Text>,
+            headerTitle: props => <Text style={{marginLeft:responsiveWidth(5),textAlign:'center',color:'white',fontSize:responsiveFontSize(2.5),textTransform:'uppercase',includeFontPadding:false,textAlignVertical:'center'}}>Note Details</Text>,
             headerRight: () => (
                 <View style={{
                     flexDirection:'row',
@@ -165,31 +155,14 @@ export default function Folder({navigation}) {
           });
     },[navigation])
 
-    function renderFolder(){
-        return(
-            <FolderBox
-            call={()=>navigation.push('notes')}
-            month={"january"}
-            />
-        )
-    }
+
 
     return (
-        <View>
-            <FlatList
-            showsVerticalScrollIndicator={false}
-            data={[1,1,1,1,1,1,1,1,1,1,1,1]}
-            renderItem={renderFolder}
-            contentContainerStyle={{
-                alignItems:'center',
-                marginTop:responsiveFontSize(1.5),
-                paddingHorizontal:responsiveFontSize(0.75)
-            }}
-            keyExtractor={(item,i)=>i.toString()}
-            numColumns={4}
-            />
+        <View style={{flex:1}}>
+           <NoteDetailBox/>
         </View>
     )
 }
 
 const styles = StyleSheet.create({})
+

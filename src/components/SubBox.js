@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
     responsiveHeight,
     responsiveWidth,
@@ -7,9 +8,10 @@ import {
   } from "react-native-responsive-dimensions";
 import MarkIcon from "react-native-vector-icons/Ionicons"
 
-export default function Subscription({title,price,auto}) {
+export default function SubBox({title,price,auto}) {
     return (
-        <View style={styles.con}>
+        <View style={{width:'50%',padding:responsiveFontSize(0.75)}}>
+            <TouchableOpacity style={styles.con}>
             <Text>{title}</Text>
             <Text><Text style={styles.price}>${price}</Text> Monthly</Text>
             <View style={styles.box}>
@@ -22,6 +24,7 @@ export default function Subscription({title,price,auto}) {
                     Auto re-new
                 </Text>
             </View>
+        </TouchableOpacity>
         </View>
     )
 }
@@ -30,7 +33,6 @@ const styles = StyleSheet.create({
     con:{
         backgroundColor:"white",
         borderRadius:responsiveFontSize(1.5),
-        width:'50%',
         padding:responsiveFontSize(1)
     },
     price:{

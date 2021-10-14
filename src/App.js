@@ -3,6 +3,7 @@ import React,{useEffect} from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import SplashScreen from 'react-native-splash-screen'
 import {Provider} from "react-redux"
+import { MenuProvider } from 'react-native-popup-menu';
 import GlobalFont from 'react-native-global-font'
 import Routes from './Routes'
 import store from "./store/index"
@@ -13,7 +14,9 @@ export default function App() {
   },[])
   return (
     <Provider store={store}>
-      <Routes/>
+      <MenuProvider>
+        <Routes/>
+      </MenuProvider>
     </Provider>
   )
 }

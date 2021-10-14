@@ -1,14 +1,16 @@
 import React from 'react'
-import { StyleSheet, Text, View, Image} from 'react-native'
+import { StyleSheet, Text, View, Image,TouchableOpacity} from 'react-native'
 import {
     responsiveHeight,
     responsiveWidth,
     responsiveFontSize
   } from "react-native-responsive-dimensions";
 
-export default function ProfileBox({img,name,email}) {
+export default function ProfileBox({img,name,email,call}) {
     return (
-        <View
+        <View style={{width:'33.33%',alignItems:'center',marginVertical:responsiveFontSize(0.75)}}>
+        <TouchableOpacity
+        onPress={call}
         style={styles.con}
         >
             <Image
@@ -17,6 +19,7 @@ export default function ProfileBox({img,name,email}) {
             />
             <Text style={{...styles.txt,marginTop:responsiveHeight(1)}}>{name}</Text>
             <Text style={styles.txt}>{email}</Text>
+        </TouchableOpacity>
         </View>
     )
 }
@@ -25,6 +28,7 @@ const styles = StyleSheet.create({
     con:{
         backgroundColor:'white',
         justifyContent:'center',
+        width:'95%',
         alignItems:'center',
         padding:responsiveFontSize(2),
         borderRadius:responsiveFontSize(1.5)

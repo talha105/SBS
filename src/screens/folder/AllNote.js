@@ -1,13 +1,14 @@
 import React,{useLayoutEffect} from 'react'
-import { StyleSheet, Text, View ,TouchableOpacity, Image,FlatList} from 'react-native'
+import { StyleSheet, Text, View ,TouchableOpacity, Image,FlatList, Touchable} from 'react-native'
 import { responsiveFontSize, responsiveScreenFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
 import MenuIcon from "react-native-vector-icons/Entypo"
 import SearchIcon from "react-native-vector-icons/AntDesign"
+import CreateIcon from "react-native-vector-icons/Ionicons"
 import MoreIcon from "react-native-vector-icons/Feather"
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
-import FolderBox from '../../components/FolderBox';
+import Note from '../../components/Note';
 
-export default function Folder({navigation}) {
+export default function AllNotes({navigation}) {
 
     useLayoutEffect(()=>{
         navigation.setOptions({
@@ -22,7 +23,7 @@ export default function Folder({navigation}) {
                     />
                 </TouchableOpacity>
             ),
-            headerTitle: props => <Text style={{marginLeft:responsiveWidth(5),textAlign:'center',color:'white',fontSize:responsiveFontSize(2.5),textTransform:'uppercase',includeFontPadding:false,textAlignVertical:'center'}}>Folders</Text>,
+            headerTitle: props => <Text style={{marginLeft:responsiveWidth(5),textAlign:'center',color:'white',fontSize:responsiveFontSize(2.5),textTransform:'uppercase',includeFontPadding:false,textAlignVertical:'center'}}>All Notes</Text>,
             headerRight: () => (
                 <View style={{
                     flexDirection:'row',
@@ -165,11 +166,15 @@ export default function Folder({navigation}) {
           });
     },[navigation])
 
-    function renderFolder(){
+    function renderNote(){
         return(
-            <FolderBox
-            call={()=>navigation.push('notes')}
-            month={"january"}
+            <Note
+            call={()=>navigation.push('noteDetail')}
+            title="Aenean pulvinar nunc."
+            des="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce lobortis ipsum"
+            date="02 Dec 2021"
+            time="02 : 05 PM"
+            select={false}
             />
         )
     }
@@ -179,17 +184,39 @@ export default function Folder({navigation}) {
             <FlatList
             showsVerticalScrollIndicator={false}
             data={[1,1,1,1,1,1,1,1,1,1,1,1]}
-            renderItem={renderFolder}
+            renderItem={renderNote}
             contentContainerStyle={{
                 alignItems:'center',
                 marginTop:responsiveFontSize(1.5),
                 paddingHorizontal:responsiveFontSize(0.75)
             }}
             keyExtractor={(item,i)=>i.toString()}
-            numColumns={4}
+            numColumns={2}
             />
+            <TouchableOpacity
+            style={styles.createCon}
+            onPress={()=>navigation.push('noteCreate')}
+            >
+                <CreateIcon
+                name="create-outline"
+                size={responsiveFontSize(4)}
+                color="white"
+                />
+            </TouchableOpacity>
         </View>
     )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    createCon:{
+        backgroundColor:'#7633FF',
+        position:'absolute',
+        width:responsiveFontSize(8),
+        height:responsiveFontSize(8),
+        justifyContent:'center',
+        alignItems:'center',
+        borderRadius:responsiveFontSize(8),
+        bottom:responsiveFontSize(4),
+        right:responsiveFontSize(4)
+    }
+})
