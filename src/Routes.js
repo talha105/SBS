@@ -190,8 +190,8 @@ function SecondStep(){
 export default function Routes() {
     return (
         <NavigationContainer theme={MyTheme}>
-            {AuthRoutes()}
-            {/* {false?AuthRoutes():SecondStep()} */}
+            {/* {AuthRoutes()} */}
+            {false?AuthRoutes():SecondStep()}
         </NavigationContainer>
     )
 }
