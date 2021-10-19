@@ -1,11 +1,11 @@
-import React, { useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { StyleSheet, View,ScrollView } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
 import {RichEditor,RichToolbar,actions} from "react-native-pell-rich-editor"
 import Btn from './Btn'
 
-export default function NoteDetailBox() {
+export default function NoteDetailBox({content}) {
     const text=useRef("hi how are you");
     const [submit,setSubmit]=useState(false)
     const [fields,setFields]=useState({
@@ -14,6 +14,13 @@ export default function NoteDetailBox() {
     })
 
     const getValue=(k,v)=>setFields({...fields,[k]:v})
+
+    const contentMemo=useMemo(()=>{
+        if(content){
+        text.current.insertText(content)
+        getValue('des',content)
+        }
+    },[content])
 
     function onSubmit(){
         setSubmit(true)
@@ -27,12 +34,13 @@ export default function NoteDetailBox() {
             <View style={{...styles.titleCon,borderWidth:1,borderColor:submit && !fields.title?"red":"white"}}>
                 <TextInput
                 onChangeText={v=>getValue('title',v)}
-                placeholder="Your Title Here"
+                placeholder="Your Title here"
                 placeholderTextColor="black"
                 />
             </View>
             <View style={{backgroundColor:'white',marginVertical:responsiveFontSize(1),borderRadius:responsiveFontSize(1),width:'95%',alignSelf:'center',flex:1}}>
             <RichEditor
+            initialContentHTML={fields.des}
             containerStyle={{borderRadius:responsiveFontSize(1),borderWidth:1,borderColor:submit && !fields.des?"red":"white"}}
             useContainer={false}
             placeholder="Your Describtion here"

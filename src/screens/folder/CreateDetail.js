@@ -6,25 +6,37 @@ import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-m
 import NoteDetailBox from '../../components/NoteDetailBox';
 import Voice from '@react-native-voice/voice';
 import VoiceModal from "../../components/voiceModal"
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import ml from '@react-native-firebase/ml';
 
 export default function CreateNote({navigation}) {
     const [voiceModal,setVoiceModal]=useState(false)
+    const [content,setContent]=useState("")
     useEffect(()=>{
         Voice.onSpeechResults=onSpeechResults
-        Voice.onSpeechRecognized=onSpeechRecognized
+        Voice.onSpeechEnd=onSpeechEnd
     },[])
 
     const onSpeechResults=(e)=>{
-        const text=e.reduce((acc,item)=>{
+        const text=e.value.reduce((acc,item)=>{
             return acc+" "+item
         },"")
+        console.log("sdfsdaf",text)
+        setContent(text)
     }
-    const onSpeechRecognized=()=>{
-        Voice.destroy().then(()=>{
-            setVoiceModal(false)
-            Voice.removeAllListeners()
-        })
+    const onSpeechEnd=()=>{
+        setVoiceModal(false)
     }
+    const onImageSelect = async (media) => {
+        if (!media.didCancel) {
+            const result =await ml.cloudDocumentTextRecognizerProcessImage(media.uri);
+            console.log('result',result)
+        }
+      };
+
+    const onTakePhoto = () => launchCamera({ mediaType: 'image' }, onImageSelect);
+    const onSelectImagePress = () => launchImageLibrary({ mediaType: 'image' }, onImageSelect);
+    
 
     useLayoutEffect(()=>{
         navigation.setOptions({
@@ -55,6 +67,7 @@ export default function CreateNote({navigation}) {
                             }}
                             >
                                 <MenuOption
+                                onSelect={onTakePhoto}
                                 customStyles={{
                                     optionWrapper:{
                                         padding:0,
@@ -104,6 +117,7 @@ export default function CreateNote({navigation}) {
                                     </View>
                                 </MenuOption>
                                 <MenuOption
+                                onSelect={onSelectImagePress}
                                 customStyles={{
                                     optionWrapper:{
                                         padding:0,
@@ -129,9 +143,13 @@ export default function CreateNote({navigation}) {
                                     </View>
                                 </MenuOption>
                                 <MenuOption
-                                onSelect={async()=>{
-                                    await Voice.start('en-US')
-                                    setVoiceModal(true)
+                                onSelect={()=>{
+                                    Voice.destroy().then(async()=>{
+                                        setVoiceModal(false)
+                                        Voice.removeAllListeners()
+                                        await Voice.start('en-US')
+                                        setVoiceModal(true)
+                                    })
                                 }}
                                 customStyles={{
                                     optionWrapper:{
@@ -176,7 +194,9 @@ export default function CreateNote({navigation}) {
             stop={async()=>await Voice.stop()}
             closeModle={()=>setVoiceModal(false)}
             />
-           <NoteDetailBox/>
+           <NoteDetailBox
+           content={content}
+           />
         </View>
     )
 }

@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "668790121628",
+    "firebase_url": "https://prac-198a8.firebaseio.com",
+    "project_id": "prac-198a8",
+    "storage_bucket": "prac-198a8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:668790121628:android:d5016632732dd434c4b959",
+        "android_client_info": {
+          "package_name": "com.sbs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "668790121628-ro3huqsv6rvo6mf1kqbte0k561nt3die.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVPu3AZDstaR1sHzsoFVr1OA2w5pehsrM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "668790121628-ro3huqsv6rvo6mf1kqbte0k561nt3die.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:668790121628:android:2c70a8c9e606fa9cc4b959",
+        "android_client_info": {
+          "package_name": "com.teacheroes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "668790121628-ro3huqsv6rvo6mf1kqbte0k561nt3die.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVPu3AZDstaR1sHzsoFVr1OA2w5pehsrM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "668790121628-ro3huqsv6rvo6mf1kqbte0k561nt3die.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
