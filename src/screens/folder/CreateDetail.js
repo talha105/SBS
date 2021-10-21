@@ -1,5 +1,5 @@
 import React,{useEffect, useLayoutEffect,useState} from 'react'
-import { StyleSheet, Text, View ,TouchableOpacity, Image,FlatList} from 'react-native'
+import { StyleSheet, Text, View ,TouchableOpacity, Image,NativeModules} from 'react-native'
 import { responsiveFontSize, responsiveScreenFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
 import MoreIcon from "react-native-vector-icons/Feather"
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
@@ -7,7 +7,7 @@ import NoteDetailBox from '../../components/NoteDetailBox';
 import Voice from '@react-native-voice/voice';
 import VoiceModal from "../../components/voiceModal"
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import ml from '@react-native-firebase/ml';
+
 
 export default function CreateNote({navigation}) {
     const [voiceModal,setVoiceModal]=useState(false)
@@ -29,7 +29,8 @@ export default function CreateNote({navigation}) {
     }
     const onImageSelect = async (media) => {
         if (!media.didCancel) {
-            const result =await ml.cloudDocumentTextRecognizerProcessImage(media.uri);
+            const { MLkitModule } = NativeModules;
+            const result =await MLkitModule.imageToText(media.uri);
             console.log('result',result)
         }
       };

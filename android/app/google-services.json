@@ -8,41 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:668790121628:android:d5016632732dd434c4b959",
+        "mobilesdk_app_id": "1:668790121628:android:61cae35cd6a83053c4b959",
         "android_client_info": {
           "package_name": "com.sbs"
         }
       },
       "oauth_client": [
         {
-          "client_id": "668790121628-ro3huqsv6rvo6mf1kqbte0k561nt3die.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBVPu3AZDstaR1sHzsoFVr1OA2w5pehsrM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "668790121628-ro3huqsv6rvo6mf1kqbte0k561nt3die.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:668790121628:android:2c70a8c9e606fa9cc4b959",
-        "android_client_info": {
-          "package_name": "com.teacheroes"
-        }
-      },
-      "oauth_client": [
+          "client_id": "668790121628-u7kjmaa7hfc71217abth412i6k1vqda2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sbs",
+            "certificate_hash": "8df11337070d4d850e0bf272a42a433e2b449f8a"
+          }
+        },
         {
           "client_id": "668790121628-ro3huqsv6rvo6mf1kqbte0k561nt3die.apps.googleusercontent.com",
           "client_type": 3
