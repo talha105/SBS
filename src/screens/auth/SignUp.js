@@ -7,23 +7,33 @@ import ArrowIcon from "react-native-vector-icons/AntDesign"
 import Btn from '../../components/Btn'
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
 import ValidateEmail from '../../utils/validateEmail'
+import * as actions from "../../store/actions"
+import { connect } from 'react-redux'
 
-export default function SignUp({navigation}) {
+function SignUp({navigation,signUp,user}) {
     const [fields,setFields]=useState({
         email:"",
-        name:"",
+        fullName:"",
         password:"",
         confirmPassword:""
     })
     const [submit,setSubmit]=useState(false)
     const [show,setShow]=useState(true)
     const [show1,setShow1]=useState(true)
+    const [loading,setLoading]=useState(false)
     const getValue=(k,v)=>setFields({...fields,[k]:v})
 
     function onSubmit(){
         setSubmit(true)
-        if(fields.password && ValidateEmail(fields.email) && fields.name){
-
+        if(
+            fields.password.length>5
+            && fields.password==fields.confirmPassword
+            && ValidateEmail(fields.email) 
+            && fields.fullName){
+            setLoading(true)
+            signUp(fields)
+            .then(()=>setLoading(false))
+            .catch(()=>setLoading(false))
         }
     }
     return (
@@ -62,8 +72,8 @@ export default function SignUp({navigation}) {
                     )
                 ):null}
                 value={fields.name}
-                getValue={(v)=>getValue('name',v)}
-                error={submit && !fields.name?true:false}
+                getValue={(v)=>getValue('fullName',v)}
+                error={submit && !fields.fullName?true:false}
                 />
                 <Input
                 name="Email Address"
@@ -78,7 +88,7 @@ export default function SignUp({navigation}) {
                 ):null}
                 value={fields.email}
                 getValue={(v)=>getValue('email',v)}
-                error={submit && !fields.email?true:false}
+                error={submit && !ValidateEmail(fields.email)?true:false}
                 />
                 <Input
                 name="Password"
@@ -122,8 +132,20 @@ export default function SignUp({navigation}) {
                         <View style={{...styles.line,backgroundColor:fields.password.length>5?"green":"grey"}}/>
                     </View>
                 </View>
+                {
+                    fields.password!=fields.confirmPassword && fields.password?(
+                        <Text style={{color:'red',textAlign:'center'}}>
+                            password not match
+                        </Text>
+                    ):(user.message?.errorMessgae?(
+                        <Text style={{color:'red',textAlign:'center'}}>
+                            {user.message?.errorMessgae}
+                        </Text>
+                    ):null)
+                }
                 <View style={styles.btn}>
                     <Btn
+                    loading={loading}
                     text="Sign Up"
                     call={onSubmit}
                     />
@@ -203,3 +225,9 @@ const styles = StyleSheet.create({
         marginVertical:responsiveFontSize(2)
     }
 })
+
+function mapStateToProps({user}){
+    return {user}
+}
+
+export default connect(mapStateToProps,actions)(SignUp)

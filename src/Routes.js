@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { NavigationContainer,DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -15,6 +15,9 @@ import CreateNote from "./screens/folder/CreateDetail"
 import AllNotes from './screens/folder/AllNote';
 import Profile from './screens/profile/Profile';
 import Profiles from './screens/profile/Profiles';
+import { connect } from 'react-redux';
+import * as actions from "./store/actions"
+import Loader from './components/Loader';
 
 const Drawer = createDrawerNavigator();
 const Stack=createNativeStackNavigator();
@@ -126,7 +129,7 @@ function SubscribtionRoutes(){
 function drawer(){
     return(
         <Drawer.Navigator
-        drawerContent={CustomDrawer}
+        drawerContent={(props)=><CustomDrawer props={props}/>}
         screenOptions={{
             drawerActiveTintColor:'#7A448D',
             headerTintColor:'white',
@@ -187,13 +190,31 @@ function SecondStep(){
     )
 }
 
-export default function Routes() {
-    return (
-        <NavigationContainer theme={MyTheme}>
-            {/* {AuthRoutes()} */}
-            {false?AuthRoutes():SecondStep()}
-        </NavigationContainer>
-    )
+function Routes({user,setUser}) {
+    const [loading,setLoading]=useState(true)
+    useEffect(()=>{
+        if(!user.data?.userData){
+            setUser().then(()=>{
+                setLoading(false)
+            })
+        }else{
+            setLoading(false)
+        }
+    },[])
+    
+    if(!loading){
+        return (
+            <NavigationContainer theme={MyTheme}>
+                {user.data?.userData?SecondStep():AuthRoutes()}
+            </NavigationContainer>
+        )
+    }else{
+        return <Loader/>
+    }
 }
 
-const styles = StyleSheet.create({})
+function mapStateToProps({user}){
+    return {user}
+}
+
+export default connect(mapStateToProps,actions)(Routes)

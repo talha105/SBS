@@ -1,22 +1,26 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import {
     responsiveHeight,
     responsiveWidth,
     responsiveFontSize
   } from "react-native-responsive-dimensions"
   
-export default function Btn({text,call}) {
+export default function Btn({text,call,loading}) {
     return (
         <TouchableOpacity
         onPress={call}
         style={styles.con}
         >
-            <Text
-            style={styles.txt}
-            >
-                {text}
-            </Text>
+            {loading?(
+                <ActivityIndicator color="white" size={responsiveFontSize(3.5)}/>
+            ):(
+                <Text
+                style={styles.txt}
+                >
+                    {text}
+                </Text>
+            )}
         </TouchableOpacity>
     )
 }

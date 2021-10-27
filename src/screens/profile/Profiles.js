@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, Image, FlatList,TouchableOpacity } from 'react-native'
 import Input from '../../components/Input'
 import Icon from "react-native-vector-icons/Ionicons"
@@ -7,72 +7,91 @@ import { responsiveFontSize, responsiveHeight,responsiveWidth } from 'react-nati
 import ValidateEmail from '../../utils/validateEmail'
 import CreateIcon from "react-native-vector-icons/AntDesign"
 import ProfileBox from "../../components/ProfileBox"
+import * as actions from "../../store/actions"
+import { connect } from 'react-redux'
+import Loader from '../../components/Loader'
 
-export default function Profiles({ navigation }) {
-    function renderProfile(){
+function Profiles({ navigation,getProfiles,profiles }) {
+
+    const [loading,setLoading]=useState(true)
+    useEffect(()=>{
+        getProfiles()
+        .then(()=>setLoading(false))
+    },[])
+    function renderProfile({item}){
+        const {
+            id,
+            profile_name,
+            profile_email
+        }=item
         return(
             <ProfileBox
             call={()=>navigation.push('drawer')}
             img={require('../../../assets/subPro.png')}
-            name="Hassan Sarwar"
-            email="journal@support.com"
+            name={profile_name}
+            email={profile_email}
             />
         )
     }
-    return (
-        <View
-            contentContainerStyle={{ ...styles.scr }}
-        >
+    
+    if(!loading){
+        return (
             <View
-                style={{
-                    backgroundColor: '#7A448D',
-                    height: responsiveHeight(18)
-                }}
-            />
-            <View style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'absolute',
-                top: responsiveHeight(11),
-                left: responsiveWidth(36)
-            }}>
-                <Image
-                    style={{
-                        width: responsiveFontSize(14),
-                        height: responsiveFontSize(14),
-                        borderRadius: responsiveFontSize(7)
-                    }}
-                    source={require('../../../assets/pro.png')}
-                />
-            </View>
-            <View style={{justifyContent:'center',alignItems:'center',marginTop:responsiveHeight(9)}}>
-            <Text style={{fontSize:responsiveFontSize(1.5)}}>Muhammad Talha</Text>
-            <Text style={{fontSize:responsiveFontSize(1.5)}}>talhanaser71@gmail.com</Text>
-            </View>
-            <FlatList
-            showsVerticalScrollIndicator={false}
-            data={[1,1,1,1,1]}
-            renderItem={renderProfile}
-            contentContainerStyle={{
-                marginTop:responsiveFontSize(1.5),
-                height:responsiveHeight(65),
-                paddingHorizontal:responsiveFontSize(0.75)
-            }}
-            keyExtractor={(item,i)=>i.toString()}
-            numColumns={3}
-            />
-            <TouchableOpacity
-            style={styles.createCon}
-            onPress={()=>navigation.push('profile')}
+                contentContainerStyle={{ ...styles.scr }}
             >
-                <CreateIcon
-                name="plus"
-                size={responsiveFontSize(4)}
-                color="white"
+                <View
+                    style={{
+                        backgroundColor: '#7A448D',
+                        height: responsiveHeight(18)
+                    }}
                 />
-            </TouchableOpacity>
-        </View>
-    )
+                <View style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    position: 'absolute',
+                    top: responsiveHeight(11),
+                    left: responsiveWidth(36)
+                }}>
+                    <Image
+                        style={{
+                            width: responsiveFontSize(14),
+                            height: responsiveFontSize(14),
+                            borderRadius: responsiveFontSize(7)
+                        }}
+                        source={require('../../../assets/pro.png')}
+                    />
+                </View>
+                <View style={{justifyContent:'center',alignItems:'center',marginTop:responsiveHeight(9)}}>
+                <Text style={{fontSize:responsiveFontSize(1.5)}}>Muhammad Talha</Text>
+                <Text style={{fontSize:responsiveFontSize(1.5)}}>talhanaser71@gmail.com</Text>
+                </View>
+                <FlatList
+                showsVerticalScrollIndicator={false}
+                data={profiles}
+                renderItem={renderProfile}
+                contentContainerStyle={{
+                    marginTop:responsiveFontSize(1.5),
+                    height:responsiveHeight(65),
+                    paddingHorizontal:responsiveFontSize(0.75)
+                }}
+                keyExtractor={(item,i)=>i.toString()}
+                numColumns={3}
+                />
+                <TouchableOpacity
+                style={styles.createCon}
+                onPress={()=>navigation.push('profile')}
+                >
+                    <CreateIcon
+                    name="plus"
+                    size={responsiveFontSize(4)}
+                    color="white"
+                    />
+                </TouchableOpacity>
+            </View>
+        )
+    }else{
+        return <Loader/>
+    }
 }
 
 const styles = StyleSheet.create({
@@ -95,3 +114,8 @@ const styles = StyleSheet.create({
         right:responsiveFontSize(4)
     }
 })
+
+function mapStateToProps({profiles}){
+    return {profiles}
+}
+export default connect(mapStateToProps,actions)(Profiles)

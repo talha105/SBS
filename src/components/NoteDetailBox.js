@@ -6,7 +6,7 @@ import {RichEditor,RichToolbar,actions} from "react-native-pell-rich-editor"
 import Btn from './Btn'
 
 export default function NoteDetailBox({content}) {
-    const text=useRef("hi how are you");
+    const text=useRef("");
     const [submit,setSubmit]=useState(false)
     const [fields,setFields]=useState({
         title:"",
@@ -17,8 +17,11 @@ export default function NoteDetailBox({content}) {
 
     const contentMemo=useMemo(()=>{
         if(content){
-        text.current.insertText(content)
-        getValue('des',content)
+            getValue('des',content)
+        }
+        
+        if(content.indexOf('<p>')==-1 && content.length>0){
+            text.current.insertHTML(content)
         }
     },[content])
 

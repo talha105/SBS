@@ -7,20 +7,26 @@ import ArrowIcon from "react-native-vector-icons/AntDesign"
 import Btn from '../../components/Btn'
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
 import ValidateEmail from '../../utils/validateEmail'
+import * as actions from "../../store/actions"
+import {connect} from "react-redux"
 
-export default function Login({navigation}) {
+function Login({navigation,login,user}) {
     const [fields,setFields]=useState({
         email:"",
         password:""
     })
     const [submit,setSubmit]=useState(false)
     const [show,setShow]=useState(true)
+    const [loading,setLoading]=useState(false)
     const getValue=(k,v)=>setFields({...fields,[k]:v})
 
     function onSubmit(){
         setSubmit(true)
         if(fields.password && ValidateEmail(fields.email)){
-            navigation.push('secondStep')
+            setLoading(true)
+            login(fields)
+            .then(()=>setLoading(false))
+            .catch(()=>setLoading(false))
         }
     }
     return (
@@ -49,7 +55,7 @@ export default function Login({navigation}) {
                 ):null}
                 value={fields.email}
                 getValue={(v)=>getValue('email',v)}
-                error={submit && !fields.email?true:false}
+                error={submit && !ValidateEmail(fields.email)?true:false}
                 />
                 <Input
                 name="Password"
@@ -73,7 +79,13 @@ export default function Login({navigation}) {
                 style={styles.forgetPass}>
                     <Text style={styles.text}>Forget Password</Text>
                 </TouchableOpacity>
+                {user.message?.errorMessgae?(
+                    <Text style={{color:'red',textAlign:'center'}}>
+                        {user.message?.errorMessgae}
+                    </Text>
+                ):null}
                 <Btn
+                loading={loading}
                 text="Sign In"
                 call={onSubmit}
                 />
@@ -158,3 +170,9 @@ const styles = StyleSheet.create({
         justifyContent:'space-between'
     }
 })
+
+function mapStateToProps({user}){
+    return {user}
+}
+
+export default connect(mapStateToProps,actions)(Login)

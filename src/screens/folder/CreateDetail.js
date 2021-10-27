@@ -7,11 +7,13 @@ import NoteDetailBox from '../../components/NoteDetailBox';
 import Voice from '@react-native-voice/voice';
 import VoiceModal from "../../components/voiceModal"
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import Loader from '../../components/Loader';
 
 
 export default function CreateNote({navigation}) {
     const [voiceModal,setVoiceModal]=useState(false)
     const [content,setContent]=useState("")
+    const [loading,setLoading]=useState(false)
     useEffect(()=>{
         Voice.onSpeechResults=onSpeechResults
         Voice.onSpeechEnd=onSpeechEnd
@@ -29,13 +31,19 @@ export default function CreateNote({navigation}) {
     }
     const onImageSelect = async (media) => {
         if (!media.didCancel) {
-            const { MLkitModule } = NativeModules;
-            const result =await MLkitModule.imageToText(media.uri);
-            console.log('result',result)
+            const { TextRecognitionModule } = NativeModules;
+            setLoading(true)
+            const result =await TextRecognitionModule.recognizeImage(media.assets[0].uri);
+            const uResult=result.blocks.reduce((ac,item)=>{
+                ac=ac+`<p>${item.text}</p>`
+                return ac
+            },"")
+            setContent(uResult)
+            setLoading(false)
         }
       };
 
-    const onTakePhoto = () => launchCamera({ mediaType: 'image' }, onImageSelect);
+    const onTakePhoto = () => launchCamera({ mediaType: 'photo',cameraType:'back' }, onImageSelect);
     const onSelectImagePress = () => launchImageLibrary({ mediaType: 'image' }, onImageSelect);
     
 
@@ -195,9 +203,15 @@ export default function CreateNote({navigation}) {
             stop={async()=>await Voice.stop()}
             closeModle={()=>setVoiceModal(false)}
             />
-           <NoteDetailBox
-           content={content}
-           />
+            {
+                loading?(
+                    <Loader/>
+                ):(
+                    <NoteDetailBox
+                    content={content}
+                    />
+                )
+            }
         </View>
     )
 }

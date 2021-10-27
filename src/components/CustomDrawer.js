@@ -9,8 +9,10 @@ import {
   Text
 } from "react-native"
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
-  
- export default function CustomDrawerContent(props) {
+import { connect } from 'react-redux';
+import * as actions from "../store/actions"
+
+function CustomDrawerContent({logOut,props}) {
     return (
       <View
       style={{
@@ -45,8 +47,10 @@ import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-di
         />
         <DrawerItem
         label="LogOut"
-        onPress={() =>alert('logOut')}
+        onPress={logOut}
       />
       </View>
     );
   }
+
+  export default connect(null,actions)(CustomDrawerContent)

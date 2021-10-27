@@ -1,8 +1,11 @@
 import {combineReducers,compose,createStore,applyMiddleware} from "redux";
 import ReduxThunk from "redux-thunk";
+import user from "./reducers/user"
+import profiles from "./reducers/profiles";
 
 const reducers =combineReducers({
-    user:()=>5
+    user,
+    profiles
 })
 
 

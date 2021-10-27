@@ -1,17 +1,22 @@
 import React, { useState } from 'react'
-import {ScrollView, StyleSheet, Text, View, Image } from 'react-native'
+import {ScrollView, StyleSheet, TouchableOpacity, View, Image } from 'react-native'
 import Input from '../../components/Input'
 import Icon from "react-native-vector-icons/Ionicons"
 import Btn from '../../components/Btn'
 import { responsiveFontSize, responsiveHeight,responsiveWidth } from 'react-native-responsive-dimensions'
 import ValidateEmail from '../../utils/validateEmail'
+import CameraIcon from "react-native-vector-icons/AntDesign"
+import PickerModal from '../../components/PickerModal'
+import {launchCamera,launchImageLibrary} from "react-native-image-picker"
 
 export default function Profile({ navigation }) {
     const [fields, setFields] = useState({
-        email: "talha@yahoo.com",
-        name: "Muhammad talha"
+        email: "",
+        name: "",
+        img:""
     })
     const [submit, setSubmit] = useState(false)
+    const [modal,setModal]=useState(false)
     const getValue = (k, v) => setFields({ ...fields, [k]: v })
 
     function onSubmit() {
@@ -20,10 +25,27 @@ export default function Profile({ navigation }) {
 
         }
     }
+
+    function openCamera(){
+        launchCamera({mediaType:'photo'},(media)=>{
+            getValue('img',media.assets[0])
+        })
+    }
+    function openGallary(){
+        launchImageLibrary({mediaType:'photo'},(media)=>{
+            getValue('img',media.assets[0])
+        })
+    }
     return (
         <ScrollView
             contentContainerStyle={{ ...styles.scr }}
         >
+            <PickerModal
+            closeModle={()=>setModal(false)}
+            goToCamera={openCamera}
+            goToGallery={openGallary}
+            visible={modal}
+            />
             <View
                 style={{
                     backgroundColor: '#7A448D',
@@ -43,8 +65,27 @@ export default function Profile({ navigation }) {
                         height: responsiveFontSize(14),
                         borderRadius: responsiveFontSize(7)
                     }}
-                    source={require('../../../assets/pro.png')}
+                    source={fields.img?{uri:fields.img.uri}:require('../../../assets/pro.png')}
                 />
+                <TouchableOpacity
+                onPress={()=>setModal(true)}
+                style={{
+                    backgroundColor:'lightgrey',
+                    width:responsiveFontSize(3.5),
+                    height:responsiveFontSize(3.5),
+                    borderRadius:responsiveFontSize(2),
+                    justifyContent:'center',
+                    alignItems:'center',
+                    position:'absolute',
+                    top:responsiveFontSize(9),
+                    left:responsiveFontSize(11)
+                }}
+                >
+                    <CameraIcon
+                    size={responsiveFontSize(2)}
+                    color="white"
+                    name="camera"/>
+                </TouchableOpacity>
             </View>
             <View style={{width:'100%'}}>
             <View style={{width:'95%',alignSelf:'center',marginTop:responsiveHeight(9)}}>
