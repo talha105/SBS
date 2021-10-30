@@ -1,4 +1,4 @@
-import React,{useLayoutEffect} from 'react'
+import React,{useEffect, useLayoutEffect, useState} from 'react'
 import { StyleSheet, Text, View ,TouchableOpacity, Image,FlatList, Touchable} from 'react-native'
 import { responsiveFontSize, responsiveScreenFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
 import MenuIcon from "react-native-vector-icons/Entypo"
@@ -7,8 +7,12 @@ import CreateIcon from "react-native-vector-icons/Ionicons"
 import MoreIcon from "react-native-vector-icons/Feather"
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import Note from '../../components/Note';
+import * as actions from "../../store/actions"
+import { connect } from 'react-redux';
+import Loader from '../../components/Loader';
+import removeTags from '../../utils/removeTags';
 
-export default function AllNotes({navigation}) {
+function AllNotes({navigation,notes,getNotes}) {
 
     useLayoutEffect(()=>{
         navigation.setOptions({
@@ -166,45 +170,64 @@ export default function AllNotes({navigation}) {
           });
     },[navigation])
 
-    function renderNote(){
+    const [loading,setLoading]=useState(true)
+
+    useEffect(()=>{
+        getNotes().then(()=>setLoading(false))
+    },[])
+    function renderNote({item}){
+        const {
+            id,
+            notes_type,
+            title,
+            description,
+            created_date,
+            profileId,
+            updated_date,
+            status
+        }=item
         return(
             <Note
             call={()=>navigation.push('noteDetail')}
-            title="Aenean pulvinar nunc."
-            des="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce lobortis ipsum"
-            date="02 Dec 2021"
-            time="02 : 05 PM"
+            title={title.length>15?title.slice(0,15)+"...":title}
+            des={removeTags(description).length>50?removeTags(description).slice(0,50)+"...":removeTags(description)}
+            date={new Date(created_date).toDateString()}
+            time={new Date(created_date).toTimeString().slice(0,5)}
             select={false}
             />
         )
     }
 
-    return (
-        <View>
-            <FlatList
-            showsVerticalScrollIndicator={false}
-            data={[1,1,1,1,1,1,1,1,1,1,1,1]}
-            renderItem={renderNote}
-            contentContainerStyle={{
-                alignItems:'center',
-                marginTop:responsiveFontSize(1.5),
-                paddingHorizontal:responsiveFontSize(0.75)
-            }}
-            keyExtractor={(item,i)=>i.toString()}
-            numColumns={2}
-            />
-            <TouchableOpacity
-            style={styles.createCon}
-            onPress={()=>navigation.push('noteCreate')}
-            >
-                <CreateIcon
-                name="create-outline"
-                size={responsiveFontSize(4)}
-                color="white"
+    if(!loading){
+        return (
+            <View style={{flex:1}}>
+                <FlatList
+                showsVerticalScrollIndicator={false}
+                data={notes}
+                renderItem={renderNote}
+                contentContainerStyle={{
+                    alignItems:'center',
+                    marginTop:responsiveFontSize(1.5),
+                    paddingHorizontal:responsiveFontSize(0.75)
+                }}
+                keyExtractor={(item,i)=>i.toString()}
+                numColumns={2}
                 />
-            </TouchableOpacity>
-        </View>
-    )
+                <TouchableOpacity
+                style={styles.createCon}
+                onPress={()=>navigation.push('noteCreate')}
+                >
+                    <CreateIcon
+                    name="create-outline"
+                    size={responsiveFontSize(4)}
+                    color="white"
+                    />
+                </TouchableOpacity>
+            </View>
+        )
+    }else{
+        return <Loader/>
+    }
 }
 
 const styles = StyleSheet.create({
@@ -220,3 +243,9 @@ const styles = StyleSheet.create({
         right:responsiveFontSize(4)
     }
 })
+
+function mapStateToProps({notes}){
+    return {notes}
+}
+
+export default connect(mapStateToProps,actions)(AllNotes)

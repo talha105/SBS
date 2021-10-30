@@ -1,4 +1,6 @@
 import {
+    CURRENT_PROFILE,
+    GET_NOTES,
     LOGIN, LOGOUT, PROFILES
 } from "./types"
 import {api} from "../../config/config.json";
@@ -114,6 +116,84 @@ export const getProfiles=()=>async(dispatch)=>{
     });
     dispatch({
         type:PROFILES,
+        payload:res.data.data.results
+    })
+    
+}
+
+export const createProfile=(data)=>async(dispatch)=>{
+    console.log(data)
+    const token=await AsyncStorage.getItem('token')
+    const body=new FormData()
+
+    if(data.img?.uri){
+        var file={
+            uri:data.img.uri,
+            name:data.img.fileName,
+            type:data.img.type
+        }
+        body.append("file",file)
+    }
+
+    body.append("profile_name",data.name);
+    body.append("profile_email",data.email)
+
+    if(data.id){
+        const res=await sbs.put(`/api/v1/form/profile/${data.id}`,body,{
+            headers:{
+                Authorization:token
+            }
+        });
+        return res
+    }else{
+        const res=await sbs.post('/api/v1/form/profile',body,{
+            headers:{
+                Authorization:token
+            }
+        });
+        return res
+    }
+    
+}
+
+export const setProfile=(data)=>async(dispatch)=>{
+    dispatch({
+        type:CURRENT_PROFILE,
+        payload:data
+    })
+}
+
+
+export const createNote=(data)=>async(dispatch)=>{
+    const updatedData={
+        notes_type: "text",
+        title:data.title,
+        description:data.des,
+        profileId:data.id
+    }
+    const token=await AsyncStorage.getItem('token')
+    const res=await sbs.post('/api/v1/notes',updatedData,{
+        headers:{
+            Authorization:token
+        }
+    });
+
+    return res
+    
+}
+
+export const getNotes=(id)=>async(dispatch)=>{
+    const token=await AsyncStorage.getItem('token')
+    const res=await sbs.get('/api/v1/notes',{
+        headers:{
+            Authorization:token
+        },
+        params:{
+            profileId:id
+        }
+    });
+    dispatch({
+        type:GET_NOTES,
         payload:res.data.data.results
     })
     

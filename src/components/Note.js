@@ -55,7 +55,9 @@ const styles = StyleSheet.create({
         backgroundColor:"white",
         borderWidth:1,
         borderRadius:responsiveFontSize(1.5),
-        padding:responsiveFontSize(1)
+        padding:responsiveFontSize(1),
+        height:responsiveHeight(14),
+        justifyContent:'space-between'
     },
     title:{
         color:'#2C4248',
@@ -78,7 +80,7 @@ const styles = StyleSheet.create({
     dt:{
         color:'lightgrey',
         marginLeft:responsiveFontSize(1),
-        fontSize:responsiveFontSize(1.3)
+        fontSize:responsiveFontSize(1.2)
     },
     mark:{
         position:'absolute',

@@ -10,8 +10,9 @@ import ProfileBox from "../../components/ProfileBox"
 import * as actions from "../../store/actions"
 import { connect } from 'react-redux'
 import Loader from '../../components/Loader'
+import {imgBase} from "../../config/config.json"
 
-function Profiles({ navigation,getProfiles,profiles }) {
+function Profiles({ navigation,getProfiles,profiles,setProfile }) {
 
     const [loading,setLoading]=useState(true)
     useEffect(()=>{
@@ -22,12 +23,13 @@ function Profiles({ navigation,getProfiles,profiles }) {
         const {
             id,
             profile_name,
-            profile_email
+            profile_email,
+            profile_picture
         }=item
         return(
             <ProfileBox
-            call={()=>navigation.push('drawer')}
-            img={require('../../../assets/subPro.png')}
+            call={()=>setProfile(item)}
+            img={profile_picture?{uri:imgBase+profile_picture}:require('../../../assets/subPro.png')}
             name={profile_name}
             email={profile_email}
             />
@@ -58,7 +60,7 @@ function Profiles({ navigation,getProfiles,profiles }) {
                             height: responsiveFontSize(14),
                             borderRadius: responsiveFontSize(7)
                         }}
-                        source={require('../../../assets/pro.png')}
+                        source={profiles[0].profile_picture?{uri:imgBase+profiles[0].profile_picture}:require('../../../assets/pro.png')}
                     />
                 </View>
                 <View style={{justifyContent:'center',alignItems:'center',marginTop:responsiveHeight(9)}}>

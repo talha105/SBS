@@ -2,10 +2,14 @@ import {combineReducers,compose,createStore,applyMiddleware} from "redux";
 import ReduxThunk from "redux-thunk";
 import user from "./reducers/user"
 import profiles from "./reducers/profiles";
+import currentProfile from "./reducers/currentProfile";
+import notes from "./reducers/notes";
 
 const reducers =combineReducers({
     user,
-    profiles
+    profiles,
+    currentProfile,
+    notes
 })
 
 

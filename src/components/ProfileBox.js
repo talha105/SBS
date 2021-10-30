@@ -30,8 +30,9 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         width:'95%',
         alignItems:'center',
-        padding:responsiveFontSize(2),
-        borderRadius:responsiveFontSize(1.5)
+        padding:responsiveFontSize(1),
+        borderRadius:responsiveFontSize(1.5),
+        height:responsiveHeight(18)
     },
     txt:{
         color:'#2C4248',

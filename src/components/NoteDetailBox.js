@@ -4,10 +4,17 @@ import { TextInput } from 'react-native-gesture-handler'
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
 import {RichEditor,RichToolbar,actions} from "react-native-pell-rich-editor"
 import Btn from './Btn'
+import * as action from "../store/actions"
+import { connect } from 'react-redux'
+import SuccessModel from './SuccessModal'
+import {useNavigation} from "@react-navigation/native"
 
-export default function NoteDetailBox({content}) {
+function NoteDetailBox({content,createNote,currentProfile}) {
+    const navigation=useNavigation();
     const text=useRef("");
     const [submit,setSubmit]=useState(false)
+    const [loading,setLoading]=useState(false)
+    const [sucModal,setSucModal]=useState(false)
     const [fields,setFields]=useState({
         title:"",
         des:""
@@ -28,12 +35,27 @@ export default function NoteDetailBox({content}) {
     function onSubmit(){
         setSubmit(true)
         if(fields.title && fields.des){
-            alert("submit")
+            setLoading(true)
+            createNote({...fields,id:currentProfile.id})
+            .then(()=>{
+                setLoading(false)
+                setSucModal(true)
+            })
+            .catch((err)=>{
+                setLoading(false)
+                console.log(err.response)
+            })
         }
     }
 
     return (
         <View style={{flex:1}}>
+            <SuccessModel
+            title="Successfully created"
+            reDirect={()=>navigation.goBack()}
+            visible={sucModal}
+            closeModle={()=>setSucModal(false)}
+            />
             <View style={{...styles.titleCon,borderWidth:1,borderColor:submit && !fields.title?"red":"white"}}>
                 <TextInput
                 onChangeText={v=>getValue('title',v)}
@@ -74,6 +96,7 @@ export default function NoteDetailBox({content}) {
             <View style={styles.btn}>
                 <Btn
                 call={onSubmit}
+                loading={loading}
                 text="Save"
                 />
             </View>
@@ -97,3 +120,9 @@ const styles = StyleSheet.create({
         marginTop:responsiveFontSize(2)
     }
 })
+
+function mapStateToProps({currentProfile}){
+    return {currentProfile}
+}
+
+export default connect(mapStateToProps,action)(NoteDetailBox)

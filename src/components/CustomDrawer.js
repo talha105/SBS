@@ -11,8 +11,9 @@ import {
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
 import { connect } from 'react-redux';
 import * as actions from "../store/actions"
+import {imgBase} from "../config/config.json"
 
-function CustomDrawerContent({logOut,props}) {
+function CustomDrawerContent({logOut,props,currentProfile}) {
     return (
       <View
       style={{
@@ -36,10 +37,10 @@ function CustomDrawerContent({logOut,props}) {
             borderColor:'white',
             borderRadius:responsiveFontSize(6)
           }}
-          source={require('../../assets/pro.png')}
+          source={currentProfile.profile_picture?{uri:imgBase+currentProfile.profile_picture}:require('../../assets/pro.png')}
           />
-          <Text style={{color:'white',fontFamily:'Poppins-Bold',fontSize:responsiveFontSize(2),marginTop:responsiveFontSize(3)}}>Muhammad talha</Text>
-          <Text style={{color:'white',fontSize:responsiveFontSize(1.5)}}>talha@gmail.com</Text>
+          <Text style={{color:'white',fontFamily:'Poppins-Bold',fontSize:responsiveFontSize(2),marginTop:responsiveFontSize(3)}}>{currentProfile.profile_name}</Text>
+          <Text style={{color:'white',fontSize:responsiveFontSize(1.5)}}>{currentProfile.profile_email}</Text>
         </View>
         <DrawerItemList 
         {...props}
@@ -53,4 +54,8 @@ function CustomDrawerContent({logOut,props}) {
     );
   }
 
-  export default connect(null,actions)(CustomDrawerContent)
+  function mapStateToProps({currentProfile}){
+    return{currentProfile}
+  }
+
+  export default connect(mapStateToProps,actions)(CustomDrawerContent)

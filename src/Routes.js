@@ -169,28 +169,32 @@ function drawer(){
     )
 }
 
-function SecondStep(){
-    return(
-        <Stack.Navigator>
-            <Stack.Screen 
-            name="profiles" 
-            options={{headerShown:false}}
-            component={Profiles}/>
-            <Stack.Screen
-            options={{
-                title:"Profile",
-                headerTintColor:'white',
-                headerShown:true
-            }}
-            name="profile"
-            component={Profile}
-            />
-            <Stack.Screen options={{headerShown:false}} name="drawer" component={drawer}/>
-        </Stack.Navigator>
-    )
+function SecondStep(currentProfile){
+    if(currentProfile.id){
+        return drawer()
+    }else{
+        return(
+            <Stack.Navigator>
+                <Stack.Screen 
+                name="profiles" 
+                options={{headerShown:false}}
+                component={Profiles}/>
+                <Stack.Screen
+                options={{
+                    title:"Profile",
+                    headerTintColor:'white',
+                    headerShown:true
+                }}
+                name="profile"
+                component={Profile}
+                />
+            </Stack.Navigator>
+        )
+    }
+
 }
 
-function Routes({user,setUser}) {
+function Routes({user,setUser,currentProfile}) {
     const [loading,setLoading]=useState(true)
     useEffect(()=>{
         if(!user.data?.userData){
@@ -205,7 +209,7 @@ function Routes({user,setUser}) {
     if(!loading){
         return (
             <NavigationContainer theme={MyTheme}>
-                {user.data?.userData?SecondStep():AuthRoutes()}
+                {user.data?.userData?SecondStep(currentProfile):AuthRoutes()}
             </NavigationContainer>
         )
     }else{
@@ -213,8 +217,8 @@ function Routes({user,setUser}) {
     }
 }
 
-function mapStateToProps({user}){
-    return {user}
+function mapStateToProps({user,currentProfile}){
+    return {user,currentProfile}
 }
 
 export default connect(mapStateToProps,actions)(Routes)
