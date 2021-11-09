@@ -4,8 +4,6 @@ import { responsiveFontSize, responsiveScreenFontSize, responsiveWidth } from 'r
 import MenuIcon from "react-native-vector-icons/Entypo"
 import SearchIcon from "react-native-vector-icons/AntDesign"
 import CreateIcon from "react-native-vector-icons/Ionicons"
-import MoreIcon from "react-native-vector-icons/Feather"
-import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import Note from '../../components/Note';
 import * as actions from "../../store/actions"
 import { connect } from 'react-redux';
@@ -43,127 +41,6 @@ function AllNotes({navigation,notes,getNotes}) {
                         size={responsiveFontSize(3)}
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity
-                    style={{marginLeft:responsiveFontSize(0.5)}}
-                    >
-                        <Menu>
-                            <MenuTrigger>
-                                <MoreIcon
-                                name="more-vertical"
-                                color="white"
-                                size={responsiveFontSize(3)}
-                                />
-                            </MenuTrigger>
-                            <MenuOptions
-                            optionsContainerStyle={{
-                                backgroundColor:'rgba(101,124,137,0.58)',
-                                width:responsiveWidth(40),
-                                borderRadius:responsiveScreenFontSize(2),
-                                padding:responsiveFontSize(1)
-                            }}
-                            >
-                                <MenuOption
-                                customStyles={{
-                                    optionWrapper:{
-                                        padding:0,
-                                        backgroundColor:'white',
-                                        borderRadius:responsiveFontSize(1),
-                                        marginVertical:responsiveFontSize(0.75)
-                                    }
-                                }}
-                                >
-                                    <View style={{
-                                        flexDirection:'row',
-                                        padding:responsiveScreenFontSize(1),
-                                        alignItems:'center'}}>
-                                        <Image
-                                        style={{
-                                            width:responsiveFontSize(3),
-                                            height:responsiveFontSize(3)
-                                        }}
-                                        source={require("../../../assets/cameraIcon.png")}
-                                        />
-                                        <Text style={{marginLeft:responsiveFontSize(1)}}>Camera</Text>
-                                    </View>
-                                </MenuOption>
-                                <MenuOption
-                                customStyles={{
-                                    optionWrapper:{
-                                        padding:0,
-                                        backgroundColor:'white',
-                                        borderRadius:responsiveFontSize(1),
-                                        marginVertical:responsiveFontSize(0.75)
-                                    }
-                                }}
-                                >
-                                    <View style={{
-                                        flexDirection:'row',
-                                        alignItems:'center',
-                                        padding:responsiveScreenFontSize(1)
-                                        }}>
-                                        <Image
-                                        style={{
-                                            width:responsiveFontSize(3),
-                                            height:responsiveFontSize(3)
-                                        }}
-                                        source={require("../../../assets/textIcon.png")}
-                                        />
-                                        <Text style={{marginLeft:responsiveFontSize(1)}}>Text</Text>
-                                    </View>
-                                </MenuOption>
-                                <MenuOption
-                                customStyles={{
-                                    optionWrapper:{
-                                        padding:0,
-                                        backgroundColor:'white',
-                                        borderRadius:responsiveFontSize(1),
-                                        marginVertical:responsiveFontSize(0.75)
-                                    }
-                                }}
-                                >
-                                    <View style={{
-                                        flexDirection:'row',
-                                        alignItems:'center',
-                                        padding:responsiveScreenFontSize(1),
-                                        }}>
-                                        <Image
-                                        style={{
-                                            width:responsiveFontSize(3),
-                                            height:responsiveFontSize(3)
-                                        }}
-                                        source={require("../../../assets/imageIcon.png")}
-                                        />
-                                        <Text style={{marginLeft:responsiveFontSize(1)}}>Image</Text>
-                                    </View>
-                                </MenuOption>
-                                <MenuOption
-                                customStyles={{
-                                    optionWrapper:{
-                                        padding:0,
-                                        backgroundColor:'white',
-                                        borderRadius:responsiveFontSize(1),
-                                        marginVertical:responsiveFontSize(0.75)
-                                    }
-                                }}
-                                >
-                                    <View style={{
-                                        flexDirection:'row',
-                                        alignItems:'center',
-                                        padding:responsiveFontSize(1)
-                                        }}>
-                                        <Image
-                                        style={{
-                                            width:responsiveFontSize(3),
-                                            height:responsiveFontSize(3)
-                                        }}
-                                        source={require("../../../assets/voiceIcon.png")}
-                                        />
-                                        <Text style={{marginLeft:responsiveFontSize(1)}}>Voice</Text>
-                                    </View>
-                                </MenuOption>
-                            </MenuOptions>
-                        </Menu>
-                    </TouchableOpacity>
                 </View>
             )
             
@@ -173,8 +50,10 @@ function AllNotes({navigation,notes,getNotes}) {
     const [loading,setLoading]=useState(true)
 
     useEffect(()=>{
-        getNotes().then(()=>setLoading(false))
-    },[])
+        return navigation.addListener('focus',()=>{
+            getNotes().then(()=>setLoading(false))
+        })
+    },[navigation])
     function renderNote({item}){
         const {
             id,
@@ -188,7 +67,7 @@ function AllNotes({navigation,notes,getNotes}) {
         }=item
         return(
             <Note
-            call={()=>navigation.push('noteDetail')}
+            call={()=>navigation.push('noteDetail',{id})}
             title={title.length>15?title.slice(0,15)+"...":title}
             des={removeTags(description).length>50?removeTags(description).slice(0,50)+"...":removeTags(description)}
             date={new Date(created_date).toDateString()}
@@ -206,7 +85,6 @@ function AllNotes({navigation,notes,getNotes}) {
                 data={notes}
                 renderItem={renderNote}
                 contentContainerStyle={{
-                    alignItems:'center',
                     marginTop:responsiveFontSize(1.5),
                     paddingHorizontal:responsiveFontSize(0.75)
                 }}

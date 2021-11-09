@@ -38,138 +38,17 @@ export default function Folder({navigation}) {
                         size={responsiveFontSize(3)}
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity
-                    style={{marginLeft:responsiveFontSize(0.5)}}
-                    >
-                        <Menu>
-                            <MenuTrigger>
-                                <MoreIcon
-                                name="more-vertical"
-                                color="white"
-                                size={responsiveFontSize(3)}
-                                />
-                            </MenuTrigger>
-                            <MenuOptions
-                            optionsContainerStyle={{
-                                backgroundColor:'rgba(101,124,137,0.58)',
-                                width:responsiveWidth(40),
-                                borderRadius:responsiveScreenFontSize(2),
-                                padding:responsiveFontSize(1)
-                            }}
-                            >
-                                <MenuOption
-                                customStyles={{
-                                    optionWrapper:{
-                                        padding:0,
-                                        backgroundColor:'white',
-                                        borderRadius:responsiveFontSize(1),
-                                        marginVertical:responsiveFontSize(0.75)
-                                    }
-                                }}
-                                >
-                                    <View style={{
-                                        flexDirection:'row',
-                                        padding:responsiveScreenFontSize(1),
-                                        alignItems:'center'}}>
-                                        <Image
-                                        style={{
-                                            width:responsiveFontSize(3),
-                                            height:responsiveFontSize(3)
-                                        }}
-                                        source={require("../../../assets/cameraIcon.png")}
-                                        />
-                                        <Text style={{marginLeft:responsiveFontSize(1)}}>Camera</Text>
-                                    </View>
-                                </MenuOption>
-                                <MenuOption
-                                customStyles={{
-                                    optionWrapper:{
-                                        padding:0,
-                                        backgroundColor:'white',
-                                        borderRadius:responsiveFontSize(1),
-                                        marginVertical:responsiveFontSize(0.75)
-                                    }
-                                }}
-                                >
-                                    <View style={{
-                                        flexDirection:'row',
-                                        alignItems:'center',
-                                        padding:responsiveScreenFontSize(1)
-                                        }}>
-                                        <Image
-                                        style={{
-                                            width:responsiveFontSize(3),
-                                            height:responsiveFontSize(3)
-                                        }}
-                                        source={require("../../../assets/textIcon.png")}
-                                        />
-                                        <Text style={{marginLeft:responsiveFontSize(1)}}>Text</Text>
-                                    </View>
-                                </MenuOption>
-                                <MenuOption
-                                customStyles={{
-                                    optionWrapper:{
-                                        padding:0,
-                                        backgroundColor:'white',
-                                        borderRadius:responsiveFontSize(1),
-                                        marginVertical:responsiveFontSize(0.75)
-                                    }
-                                }}
-                                >
-                                    <View style={{
-                                        flexDirection:'row',
-                                        alignItems:'center',
-                                        padding:responsiveScreenFontSize(1),
-                                        }}>
-                                        <Image
-                                        style={{
-                                            width:responsiveFontSize(3),
-                                            height:responsiveFontSize(3)
-                                        }}
-                                        source={require("../../../assets/imageIcon.png")}
-                                        />
-                                        <Text style={{marginLeft:responsiveFontSize(1)}}>Image</Text>
-                                    </View>
-                                </MenuOption>
-                                <MenuOption
-                                customStyles={{
-                                    optionWrapper:{
-                                        padding:0,
-                                        backgroundColor:'white',
-                                        borderRadius:responsiveFontSize(1),
-                                        marginVertical:responsiveFontSize(0.75)
-                                    }
-                                }}
-                                >
-                                    <View style={{
-                                        flexDirection:'row',
-                                        alignItems:'center',
-                                        padding:responsiveFontSize(1)
-                                        }}>
-                                        <Image
-                                        style={{
-                                            width:responsiveFontSize(3),
-                                            height:responsiveFontSize(3)
-                                        }}
-                                        source={require("../../../assets/voiceIcon.png")}
-                                        />
-                                        <Text style={{marginLeft:responsiveFontSize(1)}}>Voice</Text>
-                                    </View>
-                                </MenuOption>
-                            </MenuOptions>
-                        </Menu>
-                    </TouchableOpacity>
                 </View>
             )
             
           });
     },[navigation])
 
-    function renderFolder(){
+    function renderFolder({item}){
         return(
             <FolderBox
             call={()=>navigation.push('notes')}
-            month={"january"}
+            month={item}
             />
         )
     }
@@ -178,7 +57,7 @@ export default function Folder({navigation}) {
         <View>
             <FlatList
             showsVerticalScrollIndicator={false}
-            data={[1,1,1,1,1,1,1,1,1,1,1,1]}
+            data={["January","February","March","April","May","June","July","August","September","October","November","December"]}
             renderItem={renderFolder}
             contentContainerStyle={{
                 alignItems:'center',

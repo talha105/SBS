@@ -11,6 +11,7 @@ import {launchCamera,launchImageLibrary} from "react-native-image-picker"
 import { connect } from 'react-redux'
 import * as actions from "../../store/actions"
 import SuccessModel from '../../components/SuccessModal'
+import {imgBase} from "../../config/config.json"
 
 function Profile({ navigation,createProfile ,currentProfile}) {
     const [fields, setFields] = useState({
@@ -94,7 +95,9 @@ function Profile({ navigation,createProfile ,currentProfile}) {
                         height: responsiveFontSize(14),
                         borderRadius: responsiveFontSize(7)
                     }}
-                    source={fields.img?{uri:fields.img.uri}:require('../../../assets/pro.png')}
+                    source={fields.img?{uri:fields.img.uri}:(
+                        currentProfile.profile_picture?{uri:imgBase+currentProfile.profile_picture}:require('../../../assets/pro.png')
+                    )}
                 />
                 <TouchableOpacity
                 onPress={()=>setModal(true)}
@@ -117,7 +120,7 @@ function Profile({ navigation,createProfile ,currentProfile}) {
                 </TouchableOpacity>
             </View>
             <View style={{width:'100%',marginTop:responsiveHeight(9)}}>
-                {submit && !fields.img?<Text style={{color:'red',textAlign:'center'}}>please upload image</Text>:null}
+                {submit && !fields.img && !currentProfile.id?<Text style={{color:'red',textAlign:'center'}}>please upload image</Text>:null}
             <View style={{width:'95%',alignSelf:'center'}}>
             <Input
                 name="Full Name"

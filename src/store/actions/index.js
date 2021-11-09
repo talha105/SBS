@@ -1,7 +1,9 @@
 import {
     CURRENT_PROFILE,
     GET_NOTES,
-    LOGIN, LOGOUT, PROFILES
+    LOGIN, LOGOUT, PROFILES,
+    GET_PACKAGES,
+    GET_NOTE
 } from "./types"
 import {api} from "../../config/config.json";
 import axios,{AxiosError} from "axios";
@@ -197,4 +199,41 @@ export const getNotes=(id)=>async(dispatch)=>{
         payload:res.data.data.results
     })
     
+}
+
+export const getPackages=()=>async(dispatch)=>{
+    const token=await AsyncStorage.getItem('token')
+    const res=await sbs.get('/api/v1/package',{
+        headers:{
+            Authorization:token
+        }
+    });
+    dispatch({
+        type:GET_PACKAGES,
+        payload:res.data.data.results
+    })
+}
+
+
+export const getNote=(id)=>async(dispatch)=>{
+    const token=await AsyncStorage.getItem('token')
+    const res=await sbs.get(`/api/v1/notes/${id}`,{
+        headers:{
+            Authorization:token
+        }
+    });
+    dispatch({
+        type:GET_NOTE,
+        payload:res.data.data[0]
+    })
+}
+
+export const subscribe=(data)=>async(dispatch)=>{
+    const token=await AsyncStorage.getItem('token')
+    const res=await sbs.post(`/api/v1/customer/payment`,data,{
+        headers:{
+            Authorization:token
+        }
+    });
+    return res
 }

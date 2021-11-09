@@ -99,12 +99,6 @@ function Login({navigation,login,user}) {
                         source={require('../../../assets/thumb.png')}
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity>
-                        <Image
-                        style={styles.bottomImg}
-                        source={require('../../../assets/face.png')}
-                        />
-                    </TouchableOpacity>
                 </View>
                 <View style={styles.signUpCon}>
                     <Text>You Don't have an acount?</Text>

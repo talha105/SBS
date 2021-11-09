@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import SuccessModel from './SuccessModal'
 import {useNavigation} from "@react-navigation/native"
 
-function NoteDetailBox({content,createNote,currentProfile}) {
+function NoteDetailBox({content,createNote,currentProfile,title}) {
     const navigation=useNavigation();
     const text=useRef("");
     const [submit,setSubmit]=useState(false)
@@ -23,6 +23,13 @@ function NoteDetailBox({content,createNote,currentProfile}) {
     const getValue=(k,v)=>setFields({...fields,[k]:v})
 
     const contentMemo=useMemo(()=>{
+        if(title && content){
+            setFields({
+                title:title,
+                des:content
+            })
+            return
+        }
         if(content){
             getValue('des',content)
         }
@@ -58,6 +65,7 @@ function NoteDetailBox({content,createNote,currentProfile}) {
             />
             <View style={{...styles.titleCon,borderWidth:1,borderColor:submit && !fields.title?"red":"white"}}>
                 <TextInput
+                value={fields.title}
                 onChangeText={v=>getValue('title',v)}
                 placeholder="Your Title here"
                 placeholderTextColor="black"

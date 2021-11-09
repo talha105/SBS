@@ -16,9 +16,11 @@ function Profiles({ navigation,getProfiles,profiles,setProfile }) {
 
     const [loading,setLoading]=useState(true)
     useEffect(()=>{
-        getProfiles()
-        .then(()=>setLoading(false))
-    },[])
+        return navigation.addListener('focus',()=>{
+            getProfiles()
+            .then(()=>setLoading(false))
+        })
+    },[navigation])
     function renderProfile({item}){
         const {
             id,

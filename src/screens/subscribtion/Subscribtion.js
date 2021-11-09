@@ -1,10 +1,15 @@
-import React,{useLayoutEffect} from 'react'
+import React,{useEffect, useLayoutEffect, useState} from 'react'
 import { StyleSheet, Text, View,TouchableOpacity } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler';
 import { responsiveFontSize ,responsiveWidth} from 'react-native-responsive-dimensions';
 import MenuIcon from "react-native-vector-icons/Entypo"
-import Subscription from "../../components/SubBox"
-export default function Subscribtion({navigation}) {
+import { connect } from 'react-redux';
+import Subscription from "../../components/SubBox";
+import * as action from "../../store/actions"
+import Loader from "../../components/Loader"
+import Payment from '../../components/Payment';
+
+function Subscribtion({navigation,packages,getPackages}) {
     useLayoutEffect(()=>{
         navigation.setOptions({
             headerLeft:()=>(
@@ -22,30 +27,72 @@ export default function Subscribtion({navigation}) {
           });
     },[navigation])
 
-    function renderSub(){
+    const [loading,setLoading]=useState(true)
+    const [currentItem,setCurrentItem]=useState({})
+    const [payModal,setPayModal]=useState(false)
+    useEffect(()=>{
+        getPackages().then(()=>setLoading(false))
+    },[])
+
+    function renderSub({item}){
+        const {
+            id,
+            name,
+            price,
+            package_expiry,
+            status,
+            created_date
+        }=item
         return(
             <Subscription
-            title="One Profile"
-            price={3.99}
+            title={name}
+            price={price}
+            packageExpiry={package_expiry}
+            call={()=>{
+                setCurrentItem(item)
+                setPayModal(true)
+            }}
             auto={true}
             />
         )
     }
-    return (
-        <View>
-            <FlatList
-            showsVerticalScrollIndicator={false}
-            data={[1,1,1,1,1,1,1,1,1,1,1,1]}
-            renderItem={renderSub}
-            contentContainerStyle={{
-                alignItems:'center',
-                paddingHorizontal:responsiveFontSize(0.75)
-            }}
-            keyExtractor={(item,i)=>i.toString()}
-            numColumns={2}
-            />
-        </View>
-    )
+
+    if(!loading){
+        return (
+            <View style={{flex:1}}>
+                <Payment
+                data={currentItem}
+                visible={payModal} 
+                closeModle={()=>setPayModal(false)}
+                />
+                <FlatList
+                showsVerticalScrollIndicator={false}
+                data={packages}
+                renderItem={renderSub}
+                contentContainerStyle={{
+                    alignItems:'center',
+                    paddingHorizontal:responsiveFontSize(0.75),
+                    flex:1
+                }}
+                keyExtractor={(item,i)=>i.toString()}
+                numColumns={2}
+                ListEmptyComponent={()=>(
+                    <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                        <Text>No Result Found</Text>
+                    </View>
+                )}
+                />
+            </View>
+        )
+    }else{
+        return <Loader/>
+    }
 }
 
 const styles = StyleSheet.create({})
+
+function mapStateToProps({packages}){
+    return {packages}
+}
+
+export default connect(mapStateToProps,action)(Subscribtion)

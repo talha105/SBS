@@ -1,4 +1,4 @@
-import React,{useLayoutEffect} from 'react'
+import React,{useEffect, useLayoutEffect, useState} from 'react'
 import { StyleSheet, Text, View ,TouchableOpacity, Image,FlatList} from 'react-native'
 import { responsiveFontSize, responsiveScreenFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
 import MenuIcon from "react-native-vector-icons/Entypo"
@@ -7,9 +7,11 @@ import MoreIcon from "react-native-vector-icons/Feather"
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import FolderBox from '../../components/FolderBox';
 import NoteDetailBox from '../../components/NoteDetailBox';
+import * as action from "../../store/actions"
+import { connect } from 'react-redux';
+import Loader from '../../components/Loader';
 
-export default function NoteDetail({navigation}) {
-
+function NoteDetail({navigation,route,getNote,note}) {
     useLayoutEffect(()=>{
         navigation.setOptions({
             headerTitle: props => <Text style={{marginLeft:responsiveWidth(5),textAlign:'center',color:'white',fontSize:responsiveFontSize(2.5),textTransform:'uppercase',includeFontPadding:false,textAlignVertical:'center'}}>Note Details</Text>,
@@ -155,14 +157,32 @@ export default function NoteDetail({navigation}) {
           });
     },[navigation])
 
+    const [data,setData]=useState({})
+    const [loading,setLoading]=useState(true)
+    useEffect(()=>{
+        getNote(route.params.id)
+        .then(()=>setLoading(false))
+    },[])
 
 
-    return (
-        <View style={{flex:1}}>
-           <NoteDetailBox/>
-        </View>
-    )
+    if(!loading){
+        return (
+            <View style={{flex:1}}>
+               <NoteDetailBox
+               content={note.description}
+               title={note.title}
+               />
+            </View>
+        )
+    }else{
+        return <Loader/>
+    }
 }
 
 const styles = StyleSheet.create({})
+
+function mapStateToProps({note}){
+    return {note}
+}
+export default connect(mapStateToProps,action)(NoteDetail)
 

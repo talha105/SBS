@@ -4,12 +4,16 @@ import user from "./reducers/user"
 import profiles from "./reducers/profiles";
 import currentProfile from "./reducers/currentProfile";
 import notes from "./reducers/notes";
+import packages from "./reducers/packages";
+import note from "./reducers/note";
 
 const reducers =combineReducers({
     user,
     profiles,
     currentProfile,
-    notes
+    notes,
+    packages,
+    note
 })
 
 
