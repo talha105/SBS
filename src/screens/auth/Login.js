@@ -52,6 +52,7 @@ function Login({navigation,login,user}) {
     const [show,setShow]=useState(true)
     const [loading,setLoading]=useState(false)
     const [id,setId]=useState(false)
+    const [socialLogin,setSocialLogin]=useState(false)
     const getValue=(k,v)=>setFields({...fields,[k]:v})
 
     function onSubmit(){
@@ -65,26 +66,32 @@ function Login({navigation,login,user}) {
     }
 
     useEffect(()=>{
-        AsyncStorage.getItem('email')
-        .then((email)=>{
-            if(email){
-                TouchID.isSupported(optionalConfigObject)
-                .then(biometryType => {
-                    console.log(biometryType,"type")
-                // Success code
-                if (biometryType === 'TouchID') {
-                    setId(true)
-                }else{
-                    setId(true)
-                }
-                })
-                .catch(error => {
-                // Failure code
-                console.log(error,"dsf");
-                });
+        checkPreLogin()
+    },[])
+
+    async function checkPreLogin(){
+        const email=await AsyncStorage.getItem('email')
+        const fb=await AsyncStorage.getItem('fb')
+        if(email || JSON.parse(fb)){
+            if(JSON.parse(fb)){
+                setSocialLogin(JSON.parse(fb))
+            }
+            TouchID.isSupported(optionalConfigObject)
+            .then(biometryType => {
+                console.log(biometryType,"type")
+            // Success code
+            if (biometryType === 'TouchID') {
+                setId(true)
+            }else{
+                setId(true)
             }
             })
-    },[])
+            .catch(error => {
+            // Failure code
+            console.log(error,"dsf");
+            });
+        }
+    }
 
     const setIgToken = (data) => {
         console.log('data', data)
@@ -97,7 +104,11 @@ function Login({navigation,login,user}) {
             const email=await AsyncStorage.getItem('email')
             setFields({password,email})
             setLoading(true)
-            login({email,password}).then(()=>setLoading(false))
+            if(socialLogin){
+                login(socialLogin,true).then(()=>setLoading(false))
+            }else{
+                login({email,password}).then(()=>setLoading(false))
+            }
         })
         .catch(error => {
             console.log(error)
@@ -111,7 +122,12 @@ function Login({navigation,login,user}) {
                 console.log(result,"Login cancelled");
               } else {
                 Profile.getCurrentProfile().then((user)=>{
-                    console.log(user)
+                    login({
+                        email:user.firstName+user.lastName+'@facebook.com',
+                        full_name:user.name,
+                        social_id:user.userID,
+                        social_type:'fb'
+                    },true)
                 })
               }
             },

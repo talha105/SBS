@@ -13,7 +13,7 @@ import Loader from '../../components/Loader'
 import ReminderIcon from "react-native-vector-icons/Ionicons"
 import {imgBase} from "../../config/config.json"
 
-function Profiles({ navigation,getReminders,reminders }) {
+function Profiles({ navigation,getReminders,reminders,currentProfile }) {
 
     useLayoutEffect(()=>{
         navigation.setOptions({
@@ -35,7 +35,8 @@ function Profiles({ navigation,getReminders,reminders }) {
     const [loading,setLoading]=useState(true)
     useEffect(()=>{
         return navigation.addListener('focus',()=>{
-            getReminders()
+            setLoading(true)
+            getReminders(currentProfile.id)
             .then(()=>setLoading(false))
         })
     },[navigation])
@@ -91,6 +92,11 @@ function Profiles({ navigation,getReminders,reminders }) {
                 }}
                 keyExtractor={(item,i)=>i.toString()}
                 numColumns={2}
+                ListEmptyComponent={()=>(
+                    <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                        <Text>No Result Found</Text>
+                    </View>
+                )}
                 />
                 <TouchableOpacity
                 style={styles.createCon}
@@ -132,7 +138,7 @@ const styles = StyleSheet.create({
     }
 })
 
-function mapStateToProps({reminders}){
-    return {reminders}
+function mapStateToProps({reminders,currentProfile}){
+    return {reminders,currentProfile}
 }
 export default connect(mapStateToProps,actions)(Profiles)

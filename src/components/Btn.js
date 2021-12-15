@@ -9,6 +9,7 @@ import {
 export default function Btn({text,call,loading}) {
     return (
         <TouchableOpacity
+        disabled={loading}
         onPress={call}
         style={styles.con}
         >

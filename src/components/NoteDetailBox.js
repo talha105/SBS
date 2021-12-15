@@ -8,12 +8,15 @@ import * as action from "../store/actions"
 import { connect } from 'react-redux'
 import SuccessModel from './SuccessModal'
 import {useNavigation} from "@react-navigation/native"
+import PickerModal from './PickerModal'
+import {launchCamera,launchImageLibrary} from "react-native-image-picker"
 
-function NoteDetailBox({content,createNote,currentProfile,title,update,id}) {
+function NoteDetailBox({content,createNote,currentProfile,title,update,id,saveImage}) {
     const navigation=useNavigation();
     const text=useRef("");
     const [submit,setSubmit]=useState(false)
     const [loading,setLoading]=useState(false)
+    const [modal,setModal]=useState(false)
     const [sucModal,setSucModal]=useState(false)
     const [fields,setFields]=useState({
         title:"",
@@ -21,6 +24,32 @@ function NoteDetailBox({content,createNote,currentProfile,title,update,id}) {
     })
 
     const getValue=(k,v)=>setFields({...fields,[k]:v})
+
+    function openCamera(){
+        launchCamera({mediaType:'photo'},(media)=>{
+            text.current?.insertImage(
+                media.assets[0].uri
+              );
+            setModal(false)
+        })
+    }
+    function openGallary(){
+        launchImageLibrary({mediaType:'photo'},(media)=>{
+            setModal(false)
+            setLoading(true)
+            saveImage(media.assets[0]).then((res)=>{
+                console.log(res.data)
+                text.current?.insertImage(
+                    res.data.data.fullPath
+                  );
+                  setLoading(false)
+            })
+        })
+    }
+
+    function onPressAddImage() {
+        setModal(true)
+        }    
 
     const contentMemo=useMemo(()=>{
         if(title && content){
@@ -34,7 +63,7 @@ function NoteDetailBox({content,createNote,currentProfile,title,update,id}) {
             getValue('des',content)
         }
         
-        if(content.indexOf('<p>')==-1 && content.length>0){
+        if(content?.indexOf('<p>')==-1 && content.length>0){
             text.current.insertHTML(content)
         }
     },[content])
@@ -57,6 +86,12 @@ function NoteDetailBox({content,createNote,currentProfile,title,update,id}) {
 
     return (
         <View style={{flex:1}}>
+            <PickerModal
+            closeModle={()=>setModal(false)}
+            goToCamera={openCamera}
+            goToGallery={openGallary}
+            visible={modal}
+            />
             <SuccessModel
             title={update?"update successfully":"Successfully created"}
             reDirect={()=>navigation.goBack()}
@@ -96,10 +131,11 @@ function NoteDetailBox({content,createNote,currentProfile,title,update,id}) {
                 actions.insertBulletsList,
                 actions.insertOrderedList,
                 actions.keyboard,
+                actions.insertImage,
                 actions.undo,
-                actions.checkboxList,
                 actions.redo
             ]}
+            onPressAddImage={onPressAddImage}
             />
             <View style={styles.btn}>
                 <Btn

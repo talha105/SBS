@@ -22,19 +22,33 @@ const sbs=axios.create({
     baseURL:api
 })
 
-export const login=(data)=>async(dispatch)=>{
+export const login=(data,fb)=>async(dispatch)=>{
     try{
-        const res=await sbs.post('/api/v1/customer/login',data);
-        if(res.data.success){
-            await AsyncStorage.setItem('password',data.password)
-            await AsyncStorage.setItem('email',data.email)
-            await AsyncStorage.setItem('id',res.data.data.userData.id.toString())
-            await AsyncStorage.setItem('token',res.data.data.token)
+        if(fb){
+            const res=await sbs.post('/api/v1/customer/social-login',data);
+            if(res.data.success){
+                await AsyncStorage.setItem('fb',JSON.stringify(data))
+                await AsyncStorage.setItem('id',res.data.data.userData.id.toString())
+                await AsyncStorage.setItem('token',res.data.data.token)
+            }
+            dispatch({
+                type:LOGIN,
+                payload:res.data
+            })
+        }else{
+            const res=await sbs.post('/api/v1/customer/login',data);
+            if(res.data.success){
+                await AsyncStorage.setItem('password',data.password)
+                await AsyncStorage.setItem('email',data.email)
+                await AsyncStorage.setItem('id',res.data.data.userData.id.toString())
+                await AsyncStorage.setItem('token',res.data.data.token)
+            }
+            dispatch({
+                type:LOGIN,
+                payload:res.data
+            })
         }
-        dispatch({
-            type:LOGIN,
-            payload:res.data
-        })
+
     }catch(err){
         dispatch({
             type:LOGIN,
@@ -203,7 +217,7 @@ export const createNote=(data,update,id)=>async(dispatch)=>{
 }
 
 export const getNotes=(id,month)=>async(dispatch)=>{
-    console.log(id,month)
+    console.log(id,month,"profile")
     const token=await AsyncStorage.getItem('token')
     const res=await sbs.get('/api/v1/notes',{
         headers:{
@@ -283,6 +297,7 @@ export const search=(profileId,q)=>async(dispatch)=>{
 }
 
 export const getReminders=(profileId)=>async(dispatch)=>{
+    console.log(profileId,"reminderget")
     const token=await AsyncStorage.getItem('token')
     const res=await sbs.get(`/api/v1/remainder`,{
         headers:{
@@ -302,6 +317,23 @@ export const createReminder=(data)=>async(dispatch)=>{
     console.log(data)
     const token=await AsyncStorage.getItem('token')
     const res=await sbs.post(`/api/v1/remainder`,data,{
+        headers:{
+            Authorization:token
+        }
+    });
+    return res
+}
+
+export const saveImage=(data)=>async(dispatch)=>{
+    const body=new FormData()
+    var file={
+        uri:data.uri,
+        name:data.fileName,
+        type:data.type
+    }
+    body.append("file",file)
+    const token=await AsyncStorage.getItem('token')
+    const res=await sbs.post(`/api/v1/attachment`,body,{
         headers:{
             Authorization:token
         }

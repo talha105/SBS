@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import Loader from '../../components/Loader';
 import removeTags from '../../utils/removeTags';
 
-function AllNotes({navigation,notes,getNotes}) {
+function AllNotes({navigation,notes,getNotes,currentProfile}) {
 
     useLayoutEffect(()=>{
         navigation.setOptions({
@@ -52,7 +52,8 @@ function AllNotes({navigation,notes,getNotes}) {
 
     useEffect(()=>{
         return navigation.addListener('focus',()=>{
-            getNotes().then(()=>setLoading(false))
+            setLoading(true)
+            getNotes(currentProfile.id).then(()=>setLoading(false))
         })
     },[navigation])
     function renderNote({item}){
@@ -128,8 +129,8 @@ const styles = StyleSheet.create({
     }
 })
 
-function mapStateToProps({notes}){
-    return {notes}
+function mapStateToProps({notes,currentProfile}){
+    return {notes,currentProfile}
 }
 
 export default connect(mapStateToProps,actions)(AllNotes)
