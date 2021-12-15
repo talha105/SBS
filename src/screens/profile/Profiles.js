@@ -12,7 +12,7 @@ import { connect } from 'react-redux'
 import Loader from '../../components/Loader'
 import {imgBase} from "../../config/config.json"
 
-function Profiles({ navigation,getProfiles,profiles,setProfile }) {
+function Profiles({ navigation,getProfiles,profiles,setProfile,user,logOut }) {
 
     const [loading,setLoading]=useState(true)
     useEffect(()=>{
@@ -21,6 +21,7 @@ function Profiles({ navigation,getProfiles,profiles,setProfile }) {
             .then(()=>setLoading(false))
         })
     },[navigation])
+    console.log(user)
     function renderProfile({item}){
         const {
             id,
@@ -41,14 +42,20 @@ function Profiles({ navigation,getProfiles,profiles,setProfile }) {
     if(!loading){
         return (
             <View
-                contentContainerStyle={{ ...styles.scr }}
+                style={{ ...styles.scr }}
             >
                 <View
                     style={{
                         backgroundColor: '#7A448D',
                         height: responsiveHeight(18)
                     }}
-                />
+                >
+                <TouchableOpacity 
+                onPress={logOut}
+                style={{backgroundColor:'rgba(255, 255, 255, 0.2)',paddingHorizontal:5,borderRadius:5,width:'20%',alignSelf:'flex-end',marginTop:10,marginRight:10}}>
+                    <Text style={{textAlign:'center',color:'white'}}>logout</Text>
+                </TouchableOpacity>
+                </View>
                 <View style={{
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -62,12 +69,12 @@ function Profiles({ navigation,getProfiles,profiles,setProfile }) {
                             height: responsiveFontSize(14),
                             borderRadius: responsiveFontSize(7)
                         }}
-                        source={profiles[0].profile_picture?{uri:imgBase+profiles[0].profile_picture}:require('../../../assets/pro.png')}
+                        source={profiles[0]?.profile_picture?{uri:imgBase+profiles[0]?.profile_picture}:require('../../../assets/pro.png')}
                     />
                 </View>
                 <View style={{justifyContent:'center',alignItems:'center',marginTop:responsiveHeight(9)}}>
-                <Text style={{fontSize:responsiveFontSize(1.5)}}>Muhammad Talha</Text>
-                <Text style={{fontSize:responsiveFontSize(1.5)}}>talhanaser71@gmail.com</Text>
+                <Text style={{fontSize:responsiveFontSize(1.5)}}>{user.data?.userData?.full_name}</Text>
+                <Text style={{fontSize:responsiveFontSize(1.5)}}>{user.data?.userData?.email}</Text>
                 </View>
                 <FlatList
                 showsVerticalScrollIndicator={false}
@@ -83,7 +90,13 @@ function Profiles({ navigation,getProfiles,profiles,setProfile }) {
                 />
                 <TouchableOpacity
                 style={styles.createCon}
-                onPress={()=>navigation.push('profile')}
+                onPress={()=>{
+                    if(user.data?.userData?.packageId>user.data?.userData?.profileCount){
+                        navigation.push('profile')
+                    }else{
+                        navigation.push('subscribtion',{second:true})
+                    }
+                }}
                 >
                     <CreateIcon
                     name="plus"
@@ -119,7 +132,7 @@ const styles = StyleSheet.create({
     }
 })
 
-function mapStateToProps({profiles}){
-    return {profiles}
+function mapStateToProps({profiles,user}){
+    return {profiles,user}
 }
 export default connect(mapStateToProps,actions)(Profiles)

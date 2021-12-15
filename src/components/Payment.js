@@ -6,27 +6,29 @@ import { CardField, useStripe ,StripeProvider} from '@stripe/stripe-react-native
 import CrossIcon from "react-native-vector-icons/Entypo"
 import * as actions from "../store/actions"
 import { connect } from 'react-redux';
+import {useNavigation} from "@react-navigation/native"
 
 const {width,height}=Dimensions.get('window')
 
 function Payment({visible,closeModle,data,reDirect,subscribe,currentProfile}){
+    const navigation=useNavigation()
     const {createToken } = useStripe();
     const [paid,setPaid]=useState(false)
     const [loading,setLoading]=useState(false)
     const [token,setToken]=useState("")
-
     function onPay(){
         if(token){
             setLoading(true)
             subscribe({
                 amount:data.price,
-                subId:data.id,
+                packageId:data.id.toString(),
                 token:token,
-                proId:currentProfile.id
+                // proId:currentProfile.id
             })
             .then(()=>{
                 setPaid(true)
                 setLoading(false)
+                navigation.goBack()
             })
         }
     }

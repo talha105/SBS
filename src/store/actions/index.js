@@ -3,7 +3,11 @@ import {
     GET_NOTES,
     LOGIN, LOGOUT, PROFILES,
     GET_PACKAGES,
-    GET_NOTE
+    GET_NOTE,
+    SEARCH,
+    SUBSCRIBE,
+    GET_REMINDERS,
+    CREATE_PROFILE
 } from "./types"
 import {api} from "../../config/config.json";
 import axios,{AxiosError} from "axios";
@@ -41,8 +45,8 @@ export const login=(data)=>async(dispatch)=>{
 }
 
 export const logOut=()=>async(dispatch)=>{
-    await AsyncStorage.removeItem('password')
-    await AsyncStorage.removeItem('email')
+    // await AsyncStorage.removeItem('password')
+    // await AsyncStorage.removeItem('email')
     await AsyncStorage.removeItem('id')
     await AsyncStorage.removeItem('token')
     dispatch({
@@ -153,6 +157,10 @@ export const createProfile=(data)=>async(dispatch)=>{
                 Authorization:token
             }
         });
+        dispatch({
+            type:CREATE_PROFILE,
+            payload:1
+        })
         return res
     }
     
@@ -166,7 +174,7 @@ export const setProfile=(data)=>async(dispatch)=>{
 }
 
 
-export const createNote=(data)=>async(dispatch)=>{
+export const createNote=(data,update,id)=>async(dispatch)=>{
     const updatedData={
         notes_type: "text",
         title:data.title,
@@ -174,24 +182,36 @@ export const createNote=(data)=>async(dispatch)=>{
         profileId:data.id
     }
     const token=await AsyncStorage.getItem('token')
-    const res=await sbs.post('/api/v1/notes',updatedData,{
-        headers:{
-            Authorization:token
-        }
-    });
-
-    return res
+    if(update){
+        const res=await sbs.put(`/api/v1/notes/${id}`,updatedData,{
+            headers:{
+                Authorization:token
+            }
+        });
+        console.log(res.data)
+        return res
+    }else{
+        const res=await sbs.post(`/api/v1/notes`,updatedData,{
+            headers:{
+                Authorization:token
+            }
+        });
+    
+        return res
+    }
     
 }
 
-export const getNotes=(id)=>async(dispatch)=>{
+export const getNotes=(id,month)=>async(dispatch)=>{
+    console.log(id,month)
     const token=await AsyncStorage.getItem('token')
     const res=await sbs.get('/api/v1/notes',{
         headers:{
             Authorization:token
         },
         params:{
-            profileId:id
+            profileId:id,
+            month
         }
     });
     dispatch({
@@ -229,8 +249,59 @@ export const getNote=(id)=>async(dispatch)=>{
 }
 
 export const subscribe=(data)=>async(dispatch)=>{
+    console.log(data)
     const token=await AsyncStorage.getItem('token')
     const res=await sbs.post(`/api/v1/customer/payment`,data,{
+        headers:{
+            Authorization:token
+        }
+    });
+    if(res.data.success){
+        dispatch({
+            type:SUBSCRIBE,
+            payload:data.subId
+        })
+    }
+    return res
+}
+
+export const search=(profileId,q)=>async(dispatch)=>{
+    const token=await AsyncStorage.getItem('token')
+    const res=await sbs.get(`/api/v1/customer/notes/search`,{
+        headers:{
+            Authorization:token
+        },
+        params:{
+            profileId,
+            q
+        }
+    });
+   dispatch({
+       type:SEARCH,
+       payload:res.data.data
+   })
+}
+
+export const getReminders=(profileId)=>async(dispatch)=>{
+    const token=await AsyncStorage.getItem('token')
+    const res=await sbs.get(`/api/v1/remainder`,{
+        headers:{
+            Authorization:token
+        },
+        params:{
+            profileId,
+        }
+    });
+   dispatch({
+       type:GET_REMINDERS,
+       payload:res.data.data.results
+   })
+}
+
+export const createReminder=(data)=>async(dispatch)=>{
+    console.log(data)
+    const token=await AsyncStorage.getItem('token')
+    const res=await sbs.post(`/api/v1/remainder`,data,{
         headers:{
             Authorization:token
         }

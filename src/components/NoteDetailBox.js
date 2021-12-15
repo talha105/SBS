@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import SuccessModel from './SuccessModal'
 import {useNavigation} from "@react-navigation/native"
 
-function NoteDetailBox({content,createNote,currentProfile,title}) {
+function NoteDetailBox({content,createNote,currentProfile,title,update,id}) {
     const navigation=useNavigation();
     const text=useRef("");
     const [submit,setSubmit]=useState(false)
@@ -43,7 +43,7 @@ function NoteDetailBox({content,createNote,currentProfile,title}) {
         setSubmit(true)
         if(fields.title && fields.des){
             setLoading(true)
-            createNote({...fields,id:currentProfile.id})
+            createNote({...fields,id:currentProfile.id},update,id)
             .then(()=>{
                 setLoading(false)
                 setSucModal(true)
@@ -58,7 +58,7 @@ function NoteDetailBox({content,createNote,currentProfile,title}) {
     return (
         <View style={{flex:1}}>
             <SuccessModel
-            title="Successfully created"
+            title={update?"update successfully":"Successfully created"}
             reDirect={()=>navigation.goBack()}
             visible={sucModal}
             closeModle={()=>setSucModal(false)}

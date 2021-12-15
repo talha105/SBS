@@ -1,6 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, TextInput, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { StyleSheet, Text, TextInput, View,TouchableOpacity } from 'react-native'
 import {
     responsiveHeight,
     responsiveWidth,
@@ -8,12 +7,13 @@ import {
   } from "react-native-responsive-dimensions";
 import MarkIcon from "react-native-vector-icons/Ionicons"
 
-export default function SubBox({title,price,auto,packageExpiry,call}) {
+export default function SubBox({title,price,auto,packageExpiry,call,disable}) {
     return (
         <View style={{width:'50%',padding:responsiveFontSize(0.75)}}>
             <TouchableOpacity 
+            disabled={disable}
             onPress={call}
-            style={styles.con}>
+            style={{...styles.con,backgroundColor:!disable?'white':'#e6e6e6'}}>
             <Text>{title}</Text>
             <Text><Text style={styles.price}>${price}</Text> {packageExpiry}</Text>
             <View style={styles.box}>

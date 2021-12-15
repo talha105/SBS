@@ -30,6 +30,7 @@ export default function Folder({navigation}) {
                     alignItems:'center'
                 }}>
                     <TouchableOpacity
+                    onPress={()=>navigation.push("search")}
                     style={{marginRight:responsiveFontSize(1)}}
                     >
                         <SearchIcon
@@ -44,10 +45,10 @@ export default function Folder({navigation}) {
           });
     },[navigation])
 
-    function renderFolder({item}){
+    function renderFolder({item,index}){
         return(
             <FolderBox
-            call={()=>navigation.push('notes')}
+            call={()=>navigation.push('notes',{month:index+1})}
             month={item}
             />
         )

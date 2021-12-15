@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.rnfingerprint.FingerprintAuthPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -15,8 +16,21 @@ import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.wenkesj.voice.VoicePackage;
 import com.sbs.mlkit.TextRecognitionPackage;
 import com.hieuvp.fingerprint.ReactNativeFingerprintScannerPackage;
+import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
+import cl.json.RNSharePackage;
+import cl.json.ShareApplication;
+import com.christopherdro.RNPrint.RNPrintPackage;
+import com.facebook.reactnative.androidsdk.FBSDKPackage;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 
-public class MainApplication extends Application implements ReactApplication {
+
+public class MainApplication extends Application implements ShareApplication, ReactApplication {
+
+  @Override
+     public String getFileProviderAuthority() {
+            return BuildConfig.APPLICATION_ID + ".provider";
+     }
 
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {

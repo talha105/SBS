@@ -33,6 +33,7 @@ function AllNotes({navigation,notes,getNotes}) {
                     alignItems:'center'
                 }}>
                     <TouchableOpacity
+                    onPress={()=>navigation('search')}
                     style={{marginRight:responsiveFontSize(1)}}
                     >
                         <SearchIcon
@@ -90,6 +91,11 @@ function AllNotes({navigation,notes,getNotes}) {
                 }}
                 keyExtractor={(item,i)=>i.toString()}
                 numColumns={2}
+                ListEmptyComponent={()=>(
+                    <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                        <Text>No Result Found</Text>
+                    </View>
+                )}
                 />
                 <TouchableOpacity
                 style={styles.createCon}

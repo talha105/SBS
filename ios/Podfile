@@ -12,6 +12,12 @@ target 'SBS' do
     :hermes_enabled => false
   )
 
+  pod 'TouchID', :path => '../node_modules/react-native-touch-id'
+
+  pod 'react-native-blob-util', :path => '../node_modules/react-native-blob-util'
+
+  pod 'react-native-pdf', :path => '../node_modules/react-native-pdf'
+
   target 'SBSTests' do
     inherit! :complete
     # Pods for testing

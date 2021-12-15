@@ -9,24 +9,27 @@ import * as action from "../../store/actions"
 import Loader from "../../components/Loader"
 import Payment from '../../components/Payment';
 
-function Subscribtion({navigation,packages,getPackages}) {
+function Subscribtion({navigation,packages,getPackages,route,user}) {
     useLayoutEffect(()=>{
         navigation.setOptions({
-            headerLeft:()=>(
-                <TouchableOpacity
-                onPress={()=>navigation.openDrawer()}
-                >
-                    <MenuIcon
-                    name="menu"
-                    size={responsiveFontSize(4)}
-                    color="white"
-                    />
-                </TouchableOpacity>
-            ),
+            headerLeft:!route.params?.second?(
+                ()=>(
+                    <TouchableOpacity
+                    onPress={()=>navigation.openDrawer()}
+                    >
+                        <MenuIcon
+                        name="menu"
+                        size={responsiveFontSize(4)}
+                        color="white"
+                        />
+                    </TouchableOpacity>
+                )
+            ):null,
             headerTitle: props => <Text style={{marginLeft:responsiveWidth(5),textAlign:'center',color:'white',fontSize:responsiveFontSize(2.5),textTransform:'uppercase',includeFontPadding:false,textAlignVertical:'center'}}>Subscribtions</Text>
           });
     },[navigation])
 
+    console.log(user)
     const [loading,setLoading]=useState(true)
     const [currentItem,setCurrentItem]=useState({})
     const [payModal,setPayModal]=useState(false)
@@ -34,7 +37,7 @@ function Subscribtion({navigation,packages,getPackages}) {
         getPackages().then(()=>setLoading(false))
     },[])
 
-    function renderSub({item}){
+    function renderSub({item,index}){
         const {
             id,
             name,
@@ -52,6 +55,7 @@ function Subscribtion({navigation,packages,getPackages}) {
                 setCurrentItem(item)
                 setPayModal(true)
             }}
+            disable={user.data.userData.profileCount==index?false:true}
             auto={true}
             />
         )
@@ -91,8 +95,8 @@ function Subscribtion({navigation,packages,getPackages}) {
 
 const styles = StyleSheet.create({})
 
-function mapStateToProps({packages}){
-    return {packages}
+function mapStateToProps({packages,user}){
+    return {packages,user}
 }
 
 export default connect(mapStateToProps,action)(Subscribtion)

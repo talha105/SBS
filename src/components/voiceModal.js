@@ -22,7 +22,7 @@ function VoiceModal({visible,closeModle,voiceCancel,reDirect}){
                             width:responsiveFontSize(15),
                             height:responsiveFontSize(15)
                         }}
-                        source={require('../../assets/mike.jpg')}
+                        source={require('../../assets/mike.png')}
                         />
                         <Text style={{marginTop:responsiveFontSize(1),fontSize:responsiveFontSize(2)}}>Speak Now</Text>
                     </View>

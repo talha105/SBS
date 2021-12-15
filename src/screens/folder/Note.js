@@ -1,4 +1,4 @@
-import React,{useLayoutEffect} from 'react'
+import React,{useEffect, useLayoutEffect, useState} from 'react'
 import { StyleSheet, Text, View ,TouchableOpacity, Image,FlatList, Touchable} from 'react-native'
 import { responsiveFontSize, responsiveScreenFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
 import BackIcon from "react-native-vector-icons/AntDesign"
@@ -7,8 +7,12 @@ import CreateIcon from "react-native-vector-icons/Ionicons"
 import MoreIcon from "react-native-vector-icons/Feather"
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import Note from '../../components/Note';
+import { connect } from 'react-redux';
+import * as actions from "../../store/actions"
+import Loader from '../../components/Loader';
+import removeTags from '../../utils/removeTags';
 
-export default function Notes({navigation}) {
+function Notes({navigation,getNotes,notes,route,currentProfile}) {
 
     useLayoutEffect(()=>{
         navigation.setOptions({
@@ -155,45 +159,71 @@ export default function Notes({navigation}) {
           });
     },[navigation])
 
-    function renderNote(){
+    function renderNote({item,index}){
+        const {
+            id,
+            notes_type,
+            title,
+            description,
+            created_date,
+            profileId,
+            updated_date,
+            status
+        }=item
         return(
             <Note
-            call={()=>navigation.push('noteDetail')}
-            title="Aenean pulvinar nunc."
-            des="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce lobortis ipsum"
-            date="02 Dec 2021"
-            time="02 : 05 PM"
+            call={()=>navigation.push('noteDetail',{id})}
+            title={title.length>15?title.slice(0,15)+"...":title}
+            des={removeTags(description).length>50?removeTags(description).slice(0,50)+"...":removeTags(description)}
+            date={new Date(created_date).toDateString()}
+            time={new Date(created_date).toTimeString().slice(0,5)}
             select={false}
             />
         )
     }
 
-    return (
-        <View>
-            <FlatList
-            showsVerticalScrollIndicator={false}
-            data={[1,1,1,1,1,1,1,1,1,1,1,1]}
-            renderItem={renderNote}
-            contentContainerStyle={{
-                alignItems:'center',
-                marginTop:responsiveFontSize(1.5),
-                paddingHorizontal:responsiveFontSize(0.75)
-            }}
-            keyExtractor={(item,i)=>i.toString()}
-            numColumns={2}
-            />
-            <TouchableOpacity
-            style={styles.createCon}
-            onPress={()=>navigation.push('noteCreate')}
-            >
-                <CreateIcon
-                name="create-outline"
-                size={responsiveFontSize(4)}
-                color="white"
+    const [loading,setLoading]=useState(false)
+    useEffect(()=>{
+        return navigation.addListener('focus',()=>{
+            getNotes(currentProfile.id,route.params.month).then(()=>setLoading(false))
+        })
+    },[navigation])
+    
+    if(!loading){
+        return (
+            <View style={{flex:1}}>
+                <FlatList
+                showsVerticalScrollIndicator={false}
+                data={notes}
+                renderItem={renderNote}
+                contentContainerStyle={{
+                    flex:1,
+                    marginTop:responsiveFontSize(1.5),
+                    paddingHorizontal:responsiveFontSize(0.75)
+                }}
+                ListEmptyComponent={()=>(
+                    <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                        <Text>No Result Found</Text>
+                    </View>
+                )}
+                keyExtractor={(item,i)=>i.toString()}
+                numColumns={2}
                 />
-            </TouchableOpacity>
-        </View>
-    )
+                <TouchableOpacity
+                style={styles.createCon}
+                onPress={()=>navigation.push('noteCreate')}
+                >
+                    <CreateIcon
+                    name="create-outline"
+                    size={responsiveFontSize(4)}
+                    color="white"
+                    />
+                </TouchableOpacity>
+            </View>
+        )
+    }else{
+        return <Loader/>
+    }
 }
 
 const styles = StyleSheet.create({
@@ -209,3 +239,9 @@ const styles = StyleSheet.create({
         right:responsiveFontSize(4)
     }
 })
+
+function mapStateToProps({notes,currentProfile}){
+    return {notes,currentProfile}
+}
+
+export default connect(mapStateToProps,actions)(Notes)

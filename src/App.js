@@ -7,6 +7,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 import GlobalFont from 'react-native-global-font'
 import Routes from './Routes'
 import store from "./store/index"
+
 export default function App() {
   useEffect(()=>{
     SplashScreen.hide()

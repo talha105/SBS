@@ -1,5 +1,4 @@
 apply plugin: "com.android.application"
-apply plugin: 'com.google.gms.google-services'
 import com.android.build.OutputFile
 
 /**
@@ -136,6 +135,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     splits {
         abi {
@@ -206,7 +206,12 @@ dependencies {
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-splash-screen')
     implementation project(':@react-native-voice_voice')
-    implementation project(':react-native-fingerprint-scanner')
+    implementation project(':react-native-html-to-pdf')
+    implementation project(':react-native-share')
+    implementation project(':react-native-print')
+    implementation project(':react-native-fbsdk-next')
+    implementation 'com.facebook.android:facebook-android-sdk:latest.release'
+    implementation 'com.android.support:multidex:2.0.1'
     
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
@@ -239,3 +244,4 @@ task copyDownloadableDepsToLibs(type: Copy) {
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+apply plugin: 'com.google.gms.google-services'

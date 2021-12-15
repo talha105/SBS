@@ -6,6 +6,8 @@ import currentProfile from "./reducers/currentProfile";
 import notes from "./reducers/notes";
 import packages from "./reducers/packages";
 import note from "./reducers/note";
+import searchR from "./reducers/searchR";
+import reminders from "./reducers/reminders";
 
 const reducers =combineReducers({
     user,
@@ -13,7 +15,9 @@ const reducers =combineReducers({
     currentProfile,
     notes,
     packages,
-    note
+    note,
+    searchR,
+    reminders
 })
 
 

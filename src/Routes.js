@@ -18,6 +18,9 @@ import Profiles from './screens/profile/Profiles';
 import { connect } from 'react-redux';
 import * as actions from "./store/actions"
 import Loader from './components/Loader';
+import Search from './screens/search/Search';
+import Reminder from './screens/reminder/reminder';
+import CreateReminder from './screens/reminder/CreateReminder';
 
 const Drawer = createDrawerNavigator();
 const Stack=createNativeStackNavigator();
@@ -77,6 +80,12 @@ function FolderRoutes(){
             }}
             component={Notes}/>
             <Stack.Screen 
+            name="search" 
+            options={{
+                headerTintColor:'white'
+            }}
+            component={Search}/>
+            <Stack.Screen 
             name="noteDetail" 
             options={{
                 headerTintColor:'white'
@@ -102,6 +111,12 @@ function AllNotesRoutes(){
             }}
             component={AllNotes}/>
             <Stack.Screen 
+            name="search" 
+            options={{
+                headerTintColor:'white'
+            }}
+            component={Search}/>
+            <Stack.Screen 
             name="noteDetail" 
             options={{
                 headerTintColor:'white'
@@ -122,6 +137,23 @@ function SubscribtionRoutes(){
             <Stack.Screen 
             name="subscribtions" 
             component={Subscribtion}/>
+        </Stack.Navigator>
+    )
+}
+
+function ReminderRoutes(){
+    return(
+        <Stack.Navigator>
+            <Stack.Screen 
+            name="reminder" 
+            component={Reminder}/>
+            <Stack.Screen 
+            name="createReminder" 
+            options={{
+                headerTintColor:'white',
+                title:'Create Reminder'
+            }}
+            component={CreateReminder}/>
         </Stack.Navigator>
     )
 }
@@ -159,6 +191,13 @@ function drawer(){
             />
             <Drawer.Screen
             options={{
+                title:"Reminders"
+            }}
+            name="reminders"
+            component={ReminderRoutes}
+            />
+            <Drawer.Screen
+            options={{
                 title:"Profile",
                 headerShown:true
             }}
@@ -187,6 +226,15 @@ function SecondStep(currentProfile){
                 }}
                 name="profile"
                 component={Profile}
+                />
+                <Stack.Screen
+                options={{
+                    title:"Subscribtion",
+                    headerTintColor:'white',
+                    headerShown:true
+                }}
+                name="subscribtion"
+                component={Subscribtion}
                 />
             </Stack.Navigator>
         )
